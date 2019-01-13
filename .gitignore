@@ -1,0 +1,13 @@
+/utils.js
+/embin/
+/bin/
+/emlib/
+/lib/
+/output/
+/web.*
+/hyperplane_data
+/ext_pt
+/main
+/libraries/glpk*
+/libraries/emsdk/
+
