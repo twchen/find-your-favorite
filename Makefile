@@ -18,7 +18,7 @@ SOURCES := $(shell find $(SRCDIR) -type f -name '*.cpp' -o -name '*.c')
 OBJECTS := $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(addsuffix .o,$(SOURCES)))
 EM_OBJECTS := $(patsubst $(SRCDIR)/%,$(EM_OBJDIR)/%,$(addsuffix .o,$(SOURCES)))
 
-$(TARGET): $(filter-out bin/web.cpp.o, $(OBJECTS))
+$(TARGET): $(filter-out bin/main.cpp.o, $(OBJECTS))
 	$(CXX) $(LIB) $^ -o $@ $(LIBRARIES)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%
@@ -50,4 +50,6 @@ clean:
 web: web.js
 
 web.js: $(filter-out embin/main.cpp.o, $(EM_OBJECTS))
-	$(EMXX) --bind $(EM_LIB) $^ -o $@ $(LIBRARIES) --preload-file input -s ALLOW_MEMORY_GROWTH=1
+	$(EMXX) --bind $(EM_LIB) $^ -o $@ $(LIBRARIES) --preload-file input
+	# -s MODULARIZE=1 -s EXPORT_ES6=1
+	# -s ALLOW_MEMORY_GROWTH=1

@@ -28,7 +28,6 @@ private:
 class Dataset {
 public:
     Dataset(string filename) {
-        cout << "Reading dataset " << filename << endl;
         allPoints = read_points((char *)filename.c_str());
     }
 
@@ -76,24 +75,62 @@ private:
     point_set_t *allPoints;
 };
 
+point_set_t *normalize_points(point_set_t *P, vector<int> smallerBetter){
+
+    int dim = P->points[0]->dim;
+
+    point_set_t* norm_P = alloc_point_set(P->numberOfPoints);
+
+    for (int i = 0; i < norm_P->numberOfPoints; i++)
+    {
+        norm_P->points[i] = copy(P->points[i]);
+        norm_P->points[i]->id = P->points[i]->id;
+    }
+
+    for (int j = 0; j < dim; j++)
+    {
+        double max = 0;
+        double min = INF;
+
+        for (int i = 0; i < norm_P->numberOfPoints; i++)
+        {
+            if (norm_P->points[i]->coord[j] > max)
+                max = norm_P->points[i]->coord[j];
+            if (norm_P->points[i]->coord[j] < min)
+                min = norm_P->points[i]->coord[j];
+        }
+
+        for (int i = 0; i < norm_P->numberOfPoints; i++)
+            norm_P->points[i]->coord[j] = (norm_P->points[i]->coord[j] - min) / (max - min);
+
+        for (int i = 0; i < norm_P->numberOfPoints; i++)
+            if(smallerBetter[j])
+                norm_P->points[i]->coord[j] = 1 - norm_P->points[i]->coord[j];
+    }
+
+
+    return norm_P;
+
+}
+
 class AlgorithmRunner {
 public:
-    AlgorithmRunner(vector<Point> &candidates) {
+    AlgorithmRunner(vector<Point> &candidates, vector<int> &smallerBetter, int cmp_option) {
         this->candidates = alloc_point_set(candidates.size());
         for(int i = 0; i < candidates.size(); ++i){
             point_t *point = candidates[i].raw_ptr();
-            this->candidates->points[i] = copy(point);
+            this->candidates->points[i] = point;
             this->candidates->points[i]->id = i;
         }
-        cmp_option = SIMPLEX;
+
+        this->cmp_option = cmp_option;
         s = 2;
         prune_option = RTREE;
         current_best_idx = -1;
         last_best = -1;
         rr = 1;
-        Qcount = 0;
-        proc_P = process_car(this->candidates);
-        skyline = skyline_point(proc_P);
+        points_norm = normalize_points(this->candidates, smallerBetter); // new points
+        skyline = skyline_point(points_norm); // does not copy points
 
         int dim = skyline->points[0]->dim;
         for(int i = 0; i < skyline->numberOfPoints; ++i){
@@ -115,9 +152,9 @@ public:
     ~AlgorithmRunner() {
         for(int i = 0; i < ext_vec.size(); ++i)
             release_point(ext_vec[i]);
-        release_point_set(candidates, true);
+        release_point_set(candidates, false);
         release_point_set(skyline, false);
-        release_point_set(proc_P, true);
+        release_point_set(points_norm, true);
     }
 
     bool isFinished() {
@@ -125,7 +162,6 @@ public:
     }
 
     vector<Point> nextPair(){
-        ++Qcount;
         sort(C_idx.begin(), C_idx.end());
         S = generate_S(skyline, C_idx, s, current_best_idx, last_best, frame, cmp_option);
         if(S.size() != 2){
@@ -172,7 +208,6 @@ public:
         C_idx.resize(j);
         if(C_idx.size() > 1){
             rtree_pruning(skyline, C_idx, ext_vec, rr, NO_BOUND, HYPER_PLANE);
-            printf("%Qcount: %d, Csize: %d\n", Qcount, C_idx.size());
         }
     }
 
@@ -180,12 +215,22 @@ public:
         return C_idx.size();
     }
 
+    vector<int> getCandidatesIndices() {
+        sort(C_idx.begin(), C_idx.end());
+        vector<int> indices;
+        for(int i = 0; i < C_idx.size(); ++i){
+            int id = skyline->points[C_idx[i]]->id;
+            indices.push_back(id);
+        }
+        return indices;
+    }
+
 private:
     point_set_t *candidates;
     int cmp_option;
     int s;
     int prune_option;
-    point_set_t *proc_P;
+    point_set_t *points_norm;
     point_set_t *skyline;
     vector<int> C_idx;
     vector<point_t *> ext_vec;
@@ -193,7 +238,6 @@ private:
     int last_best;
     vector<int> frame;
     double rr;
-    int Qcount;
     vector<int> S;
 };
 
@@ -210,45 +254,105 @@ vector<pair<int, int>> getRanges(){
     return ranges;
 }
 
-int getOption(Point &p1, Point &p2) {
+int getOption(Point &p1, Point &p2, vector<string> usedAttributes) {
     int option = 0;
     while(option != 1 && option != 2){
         printf("Please choose the car you favor more:\n");
         printf("--------------------------------------------------------\n");
-        printf("|%10s|%10s|%10s|%10s|%10s|\n", " ", "Price(USD)", "Year", "PowerPS", "Used KM");
-        printf("--------------------------------------------------------\n");
-        printf("|%10s|%10.0f|%10.0f|%10.0f|%10.0f|\n", "Option 1", p1.get(0), p1.get(1), p1.get(2), p1.get(3));
-        printf("--------------------------------------------------------\n");
-        printf("|%10s|%10.0f|%10.0f|%10.0f|%10.0f|\n", "Option 2", p2.get(0), p2.get(1), p2.get(2), p2.get(3));
-        printf("--------------------------------------------------------\n");
+        for(int i = 0; i < usedAttributes.size(); ++i){
+            printf("%10s:\t%10.0f\tvs\t%10.0f\n", usedAttributes[i].c_str(), p1.get(i), p2.get(i));
+        }
         printf("Your choice:");
         scanf("%d", &option);
     }
     return option;
 }
 
+void releasePoints(vector<Point> &points){
+    for(auto &p : points){
+        point_t *ptr = p.raw_ptr();
+        release_point(ptr);
+    }
+}
+
 void algorithmRunner() {
     Dataset dataset("car.txt");
     vector<Point> candidates;
+    vector<string> attributes { "Price", "Year", "PowerPS", "Used KM" };
+    vector<int> smallerBetter = {1, 0, 0, 1};
+    vector<int> mask(4);
+    cout << "Input attribute mask: ";
+    for(int i = 0; i < 4; ++i)
+        cin >> mask[i];
+    vector<string> usedAttributes;
+    vector<int> currSmallerBetter;
+    int dim = 0;
+    for(int i = 0; i < mask.size(); ++i){
+        if(mask[i]){
+            usedAttributes.push_back(attributes[i]);
+            currSmallerBetter.push_back(smallerBetter[i]);
+            ++dim;
+        }
+    }
+    int maxPoints;
+    cout << "Enter maximum number of points: ";
+    cin >> maxPoints;
     do {
-        auto ranges = getRanges();
-        vector<int> mask {1, 1, 1, 1};
-        candidates = dataset.selectCandidates(ranges, mask, 1000);
-        if(candidates.size() < 1000)
+        vector<pair<int, int>> ranges {
+            {1000, 50000}, {2001, 2017}, {50, 400}, {10000, 150000}
+        };
+        candidates = dataset.selectCandidates(ranges, mask, maxPoints);
+        if(candidates.size() < 1000){
             cout << "Too few tuples. Try larger ranges again!" << endl;
+            releasePoints(candidates);
+        }
         else
             break;
     }while(true);
-    AlgorithmRunner runner(candidates);
+    AlgorithmRunner runner(candidates, currSmallerBetter, SIMPLEX);
+    int Qcount = 0;
+    vector<int> prevIndices = runner.getCandidatesIndices();
     while(!runner.isFinished()){
+        cout << "Candidates left: " << endl;
+        for(int i: prevIndices){
+            point_t *point = candidates[i].raw_ptr();
+            for(int j = 0; j < point->dim; ++j){
+                printf("%10.0f\t", point->coord[j]);
+            }
+            printf("\n");
+        }
         vector<Point> points = runner.nextPair();
-        int option = getOption(points[0], points[1]);
+        cout << "Question No. " << Qcount << ". No. of Points Left: " << runner.numLeftPoints() << endl;
+        int option = getOption(points[0], points[1], usedAttributes);
         runner.choose(option);
+        printf("Points pruned: \n");
+        vector<int> currIndices = runner.getCandidatesIndices();
+        vector<int> prunedIndices;
+        for(int i = 0, j = 0; i < prevIndices.size() || j < currIndices.size(); ){
+            if(j >= currIndices.size() || prevIndices[i] < currIndices[j]){
+                prunedIndices.push_back(prevIndices[i]);
+                ++i;
+            }else{ // prevIndices[i] == currIndices[j]
+                ++i;
+                ++j;
+            }
+        }
+        for(int i: prunedIndices){
+            point_t *point = candidates[i].raw_ptr();
+            for(int j = 0; j < point->dim; ++j){
+                printf("%10.0f\t", point->coord[j]);
+            }
+            printf("\n");
+        }
+        prevIndices = currIndices;
     }
     Point result = runner.getResult();
     cout << "Your favorite car is: " << endl;
     print_point(result.raw_ptr());
+    releasePoints(candidates);
 }
+
+#ifdef EMSCRIPTEN
 
 #include <emscripten/bind.h>
 using namespace emscripten;
@@ -276,11 +380,23 @@ EMSCRIPTEN_BINDINGS(my_module) {
         ;
 
     class_<AlgorithmRunner>("AlgorithmRunner")
-        .constructor<vector<Point> &>()
+        .constructor<vector<Point> &, vector<int> &, int>()
         .function("isFinished", &AlgorithmRunner::isFinished)
         .function("nextPair", &AlgorithmRunner::nextPair)
         .function("getResult", &AlgorithmRunner::getResult)
         .function("choose", &AlgorithmRunner::choose)
-        .function("numLeftPoints", &AlgorithmRunner::numLeftPoints);
+        .function("numLeftPoints", &AlgorithmRunner::numLeftPoints)
+        .function("getCandidatesIndices", &AlgorithmRunner::getCandidatesIndices)
         ;
+
+    emscripten::function("releasePoints", &releasePoints);
 }
+
+#else
+
+int main() {
+    algorithmRunner();
+    return 0;
+}
+
+#endif

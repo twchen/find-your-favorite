@@ -10,4 +10,5 @@
 /main
 /libraries/glpk*
 /libraries/emsdk/
-
+node_modules/
+build/

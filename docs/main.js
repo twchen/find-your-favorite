@@ -6,11 +6,12 @@ class App extends React.Component {
       finished: false
     }
   }
-  start = (candidates, attrNames) => {
+  start = (candidates, attrNames, smallerBetter) => {
     this.setState({
       started: true,
       candidates,
-      attrNames
+      attrNames,
+      smallerBetter
     })
   }
 
@@ -29,6 +30,7 @@ class App extends React.Component {
           candidates={this.state.candidates}
           attrNames={this.state.attrNames}
           showResult={this.showResult}
+          smallerBetter={this.state.smallerBetter}
         />
       }else{
         return <Result result={this.state.result} attrNames={this.state.attrNames}/>
@@ -47,6 +49,12 @@ class Welcome extends React.Component {
       ['Power', 50, 400],
       ['Used KM', 10000, 150000]
     ];
+    this.smallerBetter = {
+      Price: 1,
+      Year: 0,
+      Power: 0,
+      'Used KM': 1
+    };
     this.inputs = {};
     this.state = {};
     this.attrAndDefaultRanges.forEach(x => {
@@ -104,7 +112,11 @@ class Welcome extends React.Component {
         attrNames.push(attr);
       }
     }
-    this.props.start(candidates, attrNames);
+    let smallerBetter = new Module.VectorInt();
+    attrNames.forEach(attr => {
+      smallerBetter.push_back(this.smallerBetter[attr]);
+    });;
+    this.props.start(candidates, attrNames, smallerBetter);
   }
 
   render() {
@@ -189,7 +201,7 @@ class Welcome extends React.Component {
 class Interaction extends React.Component {
   constructor(props) {
     super(props);
-    this.runner = new Module.AlgorithmRunner(props.candidates);
+    this.runner = new Module.AlgorithmRunner(props.candidates, props.smallerBetter);
     this.state = {
       numAsked: 0,
       pair: this.runner.nextPair()
@@ -289,6 +301,37 @@ function Result({result, attrNames}){
       </div>
     </div>
   )
+}
+
+class Stats extends React.Component {
+  constructor(props){
+    super(props);
+
+  }
+
+  render() {
+    const comp = (a, b) => {
+
+    }
+    this.props.candidates.sort(comp);
+    return (
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-md-8">
+            <h4>No. of questions asked: {this.props.nQuestions}</h4>
+            <h4>No. of cars left: {this.props.nLeft}</h4>
+            <h4>No. of cars pruned: {this.props.nPruned}</h4>
+            <table className="table text-center">
+              <thead>
+                <tr>{ths}</tr>
+              </thead>
+              <tbody>{trs}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    )
+  }
 }
 
 /*
