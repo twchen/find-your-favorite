@@ -180,6 +180,9 @@ public:
     }
 
     Point getResult() {
+        if(candidates->numberOfPoints == 1){
+            return Point(candidates->points[0]);
+        }
         int idx = get_current_best_pt(skyline, C_idx, ext_vec);
         int id = skyline->points[idx]->id;
         Point result(candidates->points[id]);
@@ -298,12 +301,10 @@ void algorithmRunner() {
     cout << "Enter maximum number of points: ";
     cin >> maxPoints;
     do {
-        vector<pair<int, int>> ranges {
-            {1000, 50000}, {2001, 2017}, {50, 400}, {10000, 150000}
-        };
+        vector<pair<int, int>> ranges = getRanges();
         candidates = dataset.selectCandidates(ranges, mask, maxPoints);
-        if(candidates.size() < 1000){
-            cout << "Too few tuples. Try larger ranges again!" << endl;
+        if(candidates.size() == 0){
+            cout << "No matching cars. Try larger ranges again!" << endl;
             releasePoints(candidates);
         }
         else

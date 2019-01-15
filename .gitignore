@@ -12,3 +12,5 @@
 /libraries/emsdk/
 node_modules/
 build/
+.vscode/
+
