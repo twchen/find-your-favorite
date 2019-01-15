@@ -46,9 +46,9 @@ class Welcome extends React.Component {
       mask,
       maxPoints
     );
-    if (candidates.size() < 1000) {
+    if (candidates.size() === 0) {
       window.Module.releasePoints(candidates);
-      alert("Not enough samples, try larger ranges");
+      alert("No matching cars, try larger ranges");
       return;
     }
     this.props.startAlgorithm(candidates);

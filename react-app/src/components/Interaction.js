@@ -33,6 +33,14 @@ function point2Array(point) {
   return arr;
 }
 
+function points2Array2D(points) {
+  let arr = [];
+  for (let i = 0; i < points.size(); ++i) {
+    arr.push(point2Array(points.get(i)));
+  }
+  return arr;
+}
+
 class Interaction extends React.Component {
   constructor(props) {
     super(props);
@@ -58,9 +66,16 @@ class Interaction extends React.Component {
       leftPoints.push(p);
     }
     this.props.setLeftPoints(leftPoints);
-    this.state = {
-      pair: this.runner.nextPair()
-    };
+    if (this.runner.isFinished()) {
+      this.state = { pair: [] };
+      const result = point2Array(this.runner.getResult());
+      window.Module.releasePoints(this.props.candidates);
+      this.props.showResult(result);
+    } else {
+      this.state = {
+        pair: points2Array2D(this.runner.nextPair())
+      };
+    }
   }
 
   choose = idx => {
@@ -80,7 +95,7 @@ class Interaction extends React.Component {
       window.Module.releasePoints(this.props.candidates);
       this.props.showResult(result);
     } else {
-      const nextPair = this.runner.nextPair();
+      const nextPair = points2Array2D(this.runner.nextPair());
       this.setState({
         pair: nextPair
       });
@@ -88,32 +103,30 @@ class Interaction extends React.Component {
   };
 
   render() {
-    let trs = [];
-    for (let i = 0; i < this.state.pair.size(); ++i) {
-      const point = this.state.pair.get(i);
-      let tds = [<td key="Option No.">{i + 1}</td>];
-      for (let j = 0; j < point.dim(); ++j) {
-        tds.push(<td key={this.attributes[j]}>{point.get(j)}</td>);
-      }
+    const ths = [<th key="Option No.">Option</th>];
+    this.attributes.forEach(attr => {
+      ths.push(<th key={attr}>{attr}</th>);
+    });
+    ths.push(<th key="chooseButton" />);
+
+    const trs = this.state.pair.map((point, idx) => {
+      const tds = [<td key="Option No.">{idx + 1}</td>];
+      point.forEach((x, i) => {
+        tds.push(<td key={i}>{x}</td>);
+      });
       tds.push(
-        <td key="Choose button">
+        <td key="chooseButton">
           <button
             type="button"
             className="btn btn-outline-success btn-sm"
-            onClick={() => this.choose(i)}
+            onClick={() => this.choose(idx)}
           >
             Choose
           </button>
         </td>
       );
-      const tr = <tr key={i}>{tds}</tr>;
-      trs.push(tr);
-    }
-    let ths = [<th key="Option No.">Option</th>];
-    this.attributes.forEach(attr => {
-      ths.push(<th key={attr}>{attr}</th>);
+      return <tr key={idx}>{tds}</tr>;
     });
-    ths.push(<th key="chooseButton" />);
     return (
       <div className="row justify-content-center">
         <div className="col-md-8">
