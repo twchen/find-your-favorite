@@ -51,5 +51,6 @@ web: web.js
 
 web.js: $(filter-out embin/main.cpp.o, $(EM_OBJECTS))
 	$(EMXX) --bind $(EM_LIB) $^ -o $@ $(LIBRARIES) --preload-file input
+	# -s ENVIRONMENT=node
 	# -s MODULARIZE=1 -s EXPORT_ES6=1
 	# -s ALLOW_MEMORY_GROWTH=1
