@@ -22,7 +22,7 @@ window.Module = {
     const store = createStore(
       rootReducer,
       { dataset, attributes, mask }
-      , window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+      //, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     );
     render(
       <Provider store={store}>
