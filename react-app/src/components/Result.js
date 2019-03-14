@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { setActiveComponent, restart } from "../actions";
+import Histogram from "./Histogram";
 
 function Result({ leftPoints, attributes, mask, numQuestions, restart }) {
   let ths = [];
@@ -38,6 +39,9 @@ function Result({ leftPoints, attributes, mask, numQuestions, restart }) {
             {trs}
           </tbody>
         </table>
+        <div className="d-flex justify-content-center">
+          <Histogram />
+        </div>
         <button type="button" className="btn btn-primary" onClick={restart}>
           Return to Welcome
         </button>
