@@ -9,9 +9,9 @@ window.Module = {
   onRuntimeInitialized: function() {
     const dataset = new window.Module.Dataset("car.txt");
     const attributes = [
-      ["Price", { low: 1000, high: 50000, smallerBetter: true }],
+      ["Price (USD)", { low: 1000, high: 50000, smallerBetter: true }],
       ["Year", { low: 2001, high: 2017, smallerBetter: false }],
-      ["Power", { low: 50, high: 400, smallerBetter: false }],
+      ["Power (HP)", { low: 50, high: 400, smallerBetter: false }],
       ["Used KM", { low: 10000, high: 150000, smallerBetter: true }]
     ];
     const mask = {};

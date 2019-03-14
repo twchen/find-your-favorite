@@ -97,16 +97,12 @@ class Welcome extends React.Component {
     });
     return (
       <div className="text-center m-auto" style={{ maxWidth: "50rem" }}>
-        <h1>Welcome</h1>
+        <h1>Find Your Favorite!</h1>
         <p className="lead text-muted">
-          This website helps you find your favorite car in a dataset of used
-          cars. <br />
-          Enter your acceptable ranges for each attribute and the maximum number
-          of cars. Leave an input blank to use its default. <br />
-          You will be presented two cars each time and you need to choose the
-          one your prefer. <br />
-          Two algorithms are available to select the cars at each step. <br />
-          Click "Start" to start finding your favorite car!
+          This is a demostration of an interactive system for finding your favorite car in a used car database. <br />
+          Enter your acceptable range for each attribute (leave blank to use the default). <br />
+          You will be presented two cars each time and you need to choose the one you favor more. <br />
+          Click the "Start" button to find your favorite car in the database! <br />
         </p>
         <table className="table">
           <thead>

@@ -34,7 +34,7 @@ class Stats extends React.Component {
     return (
       <div className="row">
         <div className="col">
-          <h4>No. of points pruned: {this.props.prunedPoints.length}</h4>
+          <h4>The No. of Cars We Have Pruned: {this.props.prunedPoints.length}</h4>
           <table className="table">
             <thead>
               <tr>{ths}</tr>
@@ -43,7 +43,7 @@ class Stats extends React.Component {
           </table>
         </div>
         <div className="col">
-          <h4>No. of points left: {this.props.leftPoints.length}</h4>
+          <h4>The No. of Cars Left in the Database: {this.props.leftPoints.length}</h4>
           <table className="table">
             <thead>
               <tr>{ths.slice(1)}</tr>

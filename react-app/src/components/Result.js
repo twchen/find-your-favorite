@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { setActiveComponent, restart } from "../actions";
 
-function Result({ result, attributes, mask, numQuestions, restart }) {
+function Result({ leftPoints, attributes, mask, numQuestions, restart }) {
   let ths = [];
   attributes.forEach(([attr, config]) => {
     if (mask[attr]) {
@@ -10,18 +10,32 @@ function Result({ result, attributes, mask, numQuestions, restart }) {
       ths.push(th);
     }
   });
-  const tds = result.map((x, i) => <td key={i}>{x}</td>);
+  const trs = leftPoints.map((point, idx) => (
+    <tr key={idx}>
+      {point.slice(1).map((x, idx) => (
+        <td key={idx}>{x}</td>
+      ))}
+    </tr>
+  ));
   return (
     <div className="row justify-content-center">
       <div className="col">
-        <h4>No. of questions asked: {numQuestions}</h4>
-        <h4>Your favorite car is</h4>
+        <h4>
+          The Total No. of Questions Asked is: {numQuestions}.
+        </h4>
+        <h4>
+          {
+            leftPoints.length === 1 ?
+              "Your Favourite Car is:" :
+              `${leftPoints.length} Cars Left in the Database:`
+          }
+        </h4>
         <table className="table table-hover text-center">
           <thead>
             <tr>{ths}</tr>
           </thead>
           <tbody>
-            <tr>{tds}</tr>
+            {trs}
           </tbody>
         </table>
         <button type="button" className="btn btn-primary" onClick={restart}>
@@ -32,8 +46,8 @@ function Result({ result, attributes, mask, numQuestions, restart }) {
   );
 }
 
-const mapStateToProps = ({ result, attributes, mask, numQuestions }) => ({
-  result,
+const mapStateToProps = ({ leftPoints, attributes, mask, numQuestions }) => ({
+  leftPoints,
   attributes,
   mask,
   numQuestions

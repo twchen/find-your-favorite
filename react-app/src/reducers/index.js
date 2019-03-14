@@ -4,7 +4,6 @@ import {
   SET_DATASET,
   SET_CANDIDATES,
   TOGGLE_MASK,
-  SET_RESULT,
   INCREMENT_QCOUNT,
   SET_LEFT_POINTS,
   PRUNE_POINTS,
@@ -63,15 +62,6 @@ const mask = (state = null, action) => {
   }
 };
 
-const result = (state = null, action) => {
-  switch (action.type) {
-    case SET_RESULT:
-      return action.result;
-    default:
-      return state;
-  }
-};
-
 const numQuestions = (state = 0, action) => {
   switch (action.type) {
     case RESTART:
@@ -122,7 +112,6 @@ export default combineReducers({
   attributes,
   candidates,
   mask,
-  result,
   numQuestions,
   prunedPoints,
   leftPoints,

@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import {
   setActiveComponent,
-  setResult,
   incrementQCount,
   setLeftPoints,
   prunePoints
@@ -13,7 +12,7 @@ const RANDOM = 1;
 
 function getPrunedIndices(prevIndices, currIndices) {
   let prunedIndices = [];
-  for (let i = 0, j = 0; i < prevIndices.size() || j < currIndices.size(); ) {
+  for (let i = 0, j = 0; i < prevIndices.size() || j < currIndices.size();) {
     if (j >= currIndices.size() || prevIndices.get(i) < currIndices.get(j)) {
       prunedIndices.push(prevIndices.get(i));
       ++i;
@@ -66,11 +65,9 @@ class Interaction extends React.Component {
       leftPoints.push(p);
     }
     this.props.setLeftPoints(leftPoints);
-    if (this.runner.isFinished()) {
+    if (this.prevIndices.size() < 2) {
       this.state = { pair: [] };
-      const result = point2Array(this.runner.getResult());
-      window.Module.releasePoints(this.props.candidates);
-      this.props.showResult(result);
+      this.stopInteraction();
     } else {
       this.state = {
         pair: points2Array2D(this.runner.nextPair())
@@ -90,10 +87,8 @@ class Interaction extends React.Component {
     this.props.prunePoints(prunedPoints, prunedIndices);
     this.prevIndices = currIndices;
     this.props.incrementQCount();
-    if (this.runner.isFinished()) {
-      const result = point2Array(this.runner.getResult());
-      window.Module.releasePoints(this.props.candidates);
-      this.props.showResult(result);
+    if (this.prevIndices.size() < 2) {
+      this.stopInteraction();
     } else {
       const nextPair = points2Array2D(this.runner.nextPair());
       this.setState({
@@ -101,6 +96,11 @@ class Interaction extends React.Component {
       });
     }
   };
+
+  stopInteraction = () => {
+    window.Module.releasePoints(this.props.candidates);
+    this.props.showResult();
+  }
 
   render() {
     const ths = [<th key="Option No.">Option</th>];
@@ -130,13 +130,16 @@ class Interaction extends React.Component {
     return (
       <div className="row justify-content-center">
         <div className="col-md-8">
-          <h4>Q{this.props.numQuestions + 1}: choose the car you favor more</h4>
+          <h4>Q{this.props.numQuestions + 1}: Choose the Car You Favor More among the Following Options</h4>
           <table className="table table-hover text-center">
             <thead>
               <tr>{ths}</tr>
             </thead>
             <tbody>{trs}</tbody>
           </table>
+          <button type="button" className="btn btn-primary" onClick={this.stopInteraction}>
+            Stop
+          </button>
         </div>
       </div>
     );
@@ -158,8 +161,7 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  showResult: result => {
-    dispatch(setResult(result));
+  showResult: () => {
     dispatch(setActiveComponent("Result"));
   },
   incrementQCount: () => {
