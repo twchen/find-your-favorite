@@ -194,7 +194,7 @@ Module['FS_createPath']('/', 'input', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 1118413, "filename": "/input/car.txt"}], "remote_package_size": 1118413, "package_uuid": "02825bf3-efd1-43fc-b17d-603bd00cf45f"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 1118413, "filename": "/input/car.txt"}], "remote_package_size": 1118413, "package_uuid": "3e4f8fce-6e42-4228-82b1-228c7a480573"});
 
 })();
 

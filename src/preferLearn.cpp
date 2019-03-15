@@ -301,8 +301,7 @@ point_t* max_utility(FILE *wPtr, point_set_t* P_car, int cmp_option)
 	int last_best = -1;
 	vector<int> frame;
 
-	if (cmp_option != RANDOM)
-		current_best_idx = get_current_best_pt(skyline_proc_P, C_idx, ext_vec);
+	current_best_idx = get_current_best_pt(skyline_proc_P, C_idx, ext_vec);
 
 	// if not skyline
 	//sql_pruning(P, C_idx, ext_vec);

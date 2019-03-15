@@ -146,9 +146,7 @@ public:
             ext_vec.push_back(e);
         }
         
-        if(cmp_option != RANDOM){
-            current_best_idx = get_current_best_pt(skyline, C_idx, ext_vec);
-        }
+        current_best_idx = get_current_best_pt(skyline, C_idx, ext_vec);
     }
 
     ~AlgorithmRunner() {
