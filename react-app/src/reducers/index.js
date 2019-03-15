@@ -100,10 +100,8 @@ const leftPoints = (state = [], action) => {
 // history of the number of left points
 const numLeftPoints = (state = [], action) => {
   switch (action.type) {
-    case SET_CANDIDATES:
-      return [action.candidates.size()];
     case SET_LEFT_POINTS:
-      return [...state, action.points.length];
+      return [action.points.length];
     case PRUNE_POINTS:
       const prev = state[state.length - 1];
       return [...state, prev - action.points.length];

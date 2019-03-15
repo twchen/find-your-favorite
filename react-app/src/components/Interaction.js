@@ -6,6 +6,7 @@ import {
   setLeftPoints,
   prunePoints
 } from "../actions";
+import ConvexHull from "./ConvexHull";
 
 const SIMPLEX = 2;
 const RANDOM = 1;
@@ -140,6 +141,10 @@ class Interaction extends React.Component {
           <button type="button" className="btn btn-primary" onClick={this.stopInteraction}>
             Stop
           </button>
+          {
+            this.attributes.length === 3 && <ConvexHull />
+          }
+          
         </div>
       </div>
     );
