@@ -20,47 +20,34 @@ class ConvexHull extends React.Component {
     this.controls.update();
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setClearColor('#cccccc');
+    this.renderer.setClearColor(0xffffff);
     this.renderer.setSize(width, height);
     this.mount.appendChild(this.renderer.domElement);
     this.scene.add(new THREE.AxesHelper(1.5));
     this.start();
   }
 
-  getRanges = () => {
-    this.ranges = [
-      [Infinity, 0],
-      [Infinity, 0],
-      [Infinity, 0]
-    ];
-
-    this.props.leftPoints.forEach(tuple => {
-      tuple.slice(1).forEach((attr, i) => {
-        if (this.ranges[i][0] > attr) {
-          this.ranges[i][0] = attr;
-        }
-        if (this.ranges[i][1] < attr) {
-          this.ranges[i][1] = attr;
-        }
-      });
-    });
-  }
-
   drawGeometry = () => {
-    if (this.props.leftPoints.length < 2) return;
-    if (this.ranges === undefined) this.getRanges();
-    const points = this.props.leftPoints.map(tuple => {
-      const attrs_scaled = tuple.slice(1).map((attr, i) => {
-        const [min, max] = this.ranges[i];
-        return (attr - min) / (max - min);
-      });
-      return new THREE.Vector3(...attrs_scaled);
-    });
+    if (this.props.vertices < 2) return;
+    const points = this.props.vertices.map(vertex => new THREE.Vector3(...vertex));
 
     if (points.length > 3) {
       const geometry = new THREE.ConvexGeometry(points);
-      const material = new THREE.MeshBasicMaterial({ color: 0x336699, wireframe: true });
+      const material = new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        //shading: THREE.FlatShading,
+        polygonOffset: true,
+        polygonOffsetFactor: 1, // positive value pushes polygon further away
+        polygonOffsetUnits: 1,
+        opacity: 0.5,
+        transparent: true
+      });
       this.mesh = new THREE.Mesh(geometry, material);
+
+      const geo = new THREE.EdgesGeometry(geometry); // or WireframeGeometry
+      const mat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 });
+      const wireframe = new THREE.LineSegments(geo, mat);
+      this.mesh.add(wireframe);
     } else {
       const geometry = new THREE.Geometry();
       points.forEach(point => {
@@ -70,14 +57,14 @@ class ConvexHull extends React.Component {
         // line geometry is not closed. Add the first point to close the line.
         geometry.vertices.push(points[0]);
       }
-      const material = new THREE.LineBasicMaterial({ color: 0x336699 });
+      const material = new THREE.LineBasicMaterial({ color: 0x000000 });
       this.mesh = new THREE.Line(geometry, material);
     }
     this.scene.add(this.mesh);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.leftPoints !== prevProps.leftPoints) {
+    if (this.props.vertices !== prevProps.vertices) {
       if (this.mesh) {
         this.scene.remove(this.mesh);
         this.mesh.geometry.dispose();
@@ -110,17 +97,14 @@ class ConvexHull extends React.Component {
 
   render() {
     return (
-      <div style={{ margin: '1rem' }}>
-        <h4>Convex Hull of Left Cars</h4>
-        <div
-          style={{ width: '400px', height: '400px', margin: 'auto' }}
-          ref={(mount) => { this.mount = mount }}
-        />
-      </div>
+      <div
+        style={{ width: '400px', height: '400px', margin: 'auto' }}
+        ref={(mount) => { this.mount = mount }}
+      />
     )
   }
 }
 
-const mapStateToProps = ({ candidates, leftPoints }) => ({ candidates, leftPoints });
+const mapStateToProps = ({ vertices }) => ({ vertices });
 
 export default connect(mapStateToProps)(ConvexHull);

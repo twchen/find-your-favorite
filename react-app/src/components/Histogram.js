@@ -8,7 +8,6 @@ class Histogram extends React.Component {
     this.state = {
       hintValue: null
     }
-    this.data = props.numLeftPoints.map((num, i) => ({ x: i, y: num }));
   }
 
   _onMouseLeave = () => {
@@ -19,7 +18,7 @@ class Histogram extends React.Component {
 
   _onNearestX = (value, { index }) => {
     this.setState({
-      hintValue: this.data[index]
+      hintValue: this.props.data[index]
     });
   }
 
@@ -27,7 +26,7 @@ class Histogram extends React.Component {
     return (
       <XYPlot onMouseLeave={this._onMouseLeave} height={400} width={400}>
         <XAxis
-          tickValues={this.props.numLeftPoints.map((num, i) => i)}
+          tickValues={this.props.data.map((val, idx) => idx)}
           tickFormat={value => value.toString()}
         />
         <YAxis />
@@ -47,7 +46,7 @@ class Histogram extends React.Component {
             textAnchor: 'end'
           }}
         />
-        <VerticalBarSeries color='rgb(0, 123, 255)' onNearestX={this._onNearestX} data={this.data} />
+        <VerticalBarSeries color='rgb(0, 123, 255)' onNearestX={this._onNearestX} data={this.props.data} animation />
         {
           this.state.hintValue &&
           <Hint value={this.state.hintValue}>
@@ -60,6 +59,8 @@ class Histogram extends React.Component {
 
 }
 
-const mapStateToProps = ({ numLeftPoints }) => ({ numLeftPoints });
+const mapStateToProps = ({ numLeftPoints }) => ({
+  data: numLeftPoints.map((num, i) => ({ x: i, y: num }))
+});
 
 export default connect(mapStateToProps)(Histogram);

@@ -8,7 +8,8 @@ import {
   SET_LEFT_POINTS,
   PRUNE_POINTS,
   SET_MODE,
-  RESTART
+  RESTART,
+  UPDATE_CONVEX_HULL
 } from "../actions";
 
 const activeComponent = (state = "Welcome", action) => {
@@ -119,6 +120,15 @@ const mode = (state = "simplex", action) => {
   }
 };
 
+const vertices = (state = [], action) => {
+  switch (action.type) {
+    case UPDATE_CONVEX_HULL:
+      return action.vertices;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   activeComponent,
   dataset,
@@ -129,5 +139,6 @@ export default combineReducers({
   prunedPoints,
   leftPoints,
   numLeftPoints,
-  mode
+  mode,
+  vertices
 });

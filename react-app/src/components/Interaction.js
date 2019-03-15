@@ -4,9 +4,9 @@ import {
   setActiveComponent,
   incrementQCount,
   setLeftPoints,
-  prunePoints
+  prunePoints,
+  updateConvexHull
 } from "../actions";
-import ConvexHull from "./ConvexHull";
 
 const SIMPLEX = 2;
 const RANDOM = 1;
@@ -66,10 +66,12 @@ class Interaction extends React.Component {
       leftPoints.push(p);
     }
     this.props.setLeftPoints(leftPoints);
-    if (this.prevIndices.size() < 2) {
+    if (leftPoints.length < 2) {
       this.state = { pair: [] };
       this.stopInteraction();
     } else {
+      const convexHullVertices = window.Module.read_convex_hull_vertices();
+      this.props.updateConvexHull(convexHullVertices);
       this.state = {
         pair: points2Array2D(this.runner.nextPair())
       };
@@ -79,6 +81,8 @@ class Interaction extends React.Component {
   choose = idx => {
     const option = idx + 1;
     this.runner.choose(option);
+    const convexHullVertices = window.Module.read_convex_hull_vertices();
+    this.props.updateConvexHull(convexHullVertices);
     const currIndices = this.runner.getCandidatesIndices();
     const prunedIndices = getPrunedIndices(this.prevIndices, currIndices);
     const prunedPoints = prunedIndices.map(idx => {
@@ -129,22 +133,23 @@ class Interaction extends React.Component {
       return <tr key={idx}>{tds}</tr>;
     });
     return (
-      <div className="row justify-content-center">
-        <div className="col-md-8">
-          <h4>Q{this.props.numQuestions + 1}: Choose the Car You Favor More among the Following Options</h4>
-          <table className="table table-hover text-center">
-            <thead>
-              <tr>{ths}</tr>
-            </thead>
-            <tbody>{trs}</tbody>
-          </table>
-          <button type="button" className="btn btn-primary" onClick={this.stopInteraction}>
-            Stop
-          </button>
-          {
-            this.attributes.length === 3 && <ConvexHull />
-          }
-          
+      <div>
+        <h4>Q{this.props.numQuestions + 1}: Choose the Car You Favor More among the Following Options</h4>
+        <div className="row justify-content-center align-items-center">
+          <div className="col-md-8">
+            
+            <table className="table table-hover text-center">
+              <thead>
+                <tr>{ths}</tr>
+              </thead>
+              <tbody>{trs}</tbody>
+            </table>
+          </div>
+          <div className="col-md-2">
+            <button type="button" className="btn btn-primary" onClick={this.stopInteraction}>
+              Stop
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -165,6 +170,20 @@ const mapStateToProps = ({
   mode
 });
 
+function parseVertices(vertices) {
+  if (vertices.size() < 1 || vertices.get(0).size() < 2) return [];
+  const verts = [];
+  for (let i = 0; i < vertices.size(); ++i) {
+    const vertex = vertices.get(i);
+    const vert = [];
+    for (let j = 0; j < vertex.size() - 1; ++j) {
+      vert.push(vertex.get(j));
+    }
+    verts.push(vert);
+  }
+  return verts;
+}
+
 const mapDispatchToProps = dispatch => ({
   showResult: () => {
     dispatch(setActiveComponent("Result"));
@@ -177,6 +196,9 @@ const mapDispatchToProps = dispatch => ({
   },
   prunePoints: (points, indices) => {
     dispatch(prunePoints(points, indices));
+  },
+  updateConvexHull: (vertices) => {
+    dispatch(updateConvexHull(parseVertices(vertices)))
   }
 });
 

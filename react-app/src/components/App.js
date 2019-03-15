@@ -4,6 +4,7 @@ import Interaction from "./Interaction";
 import Result from "./Result";
 import Stats from "./Stats";
 import { connect } from "react-redux";
+import Visuals from "./Visuals";
 
 function App({ activeComponent }) {
   if (activeComponent === "Welcome") {
@@ -12,6 +13,7 @@ function App({ activeComponent }) {
     return (
       <div>
         <Interaction />
+        <Visuals />
         <Stats />
       </div>
     );

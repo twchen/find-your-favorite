@@ -7,6 +7,7 @@ export const PRUNE_POINTS = "PRUNE_POINTS";
 export const SET_LEFT_POINTS = "SET_LEFT_POINTS";
 export const SET_MODE = "SET_MODE";
 export const RESTART = "RESTART";
+export const UPDATE_CONVEX_HULL = "UPDATE_CONVEX_HULL";
 
 export const setActiveComponent = component => ({
   type: SET_ACTIVE_COMPONENT,
@@ -51,4 +52,9 @@ export const changeMode = mode => ({
 
 export const restart = () => ({
   type: RESTART
+});
+
+export const updateConvexHull = (vertices) => ({
+  type: UPDATE_CONVEX_HULL,
+  vertices
 });

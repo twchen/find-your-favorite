@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <fstream>
+#include <vector>
 #include "preferLearn.h"
 
 int get_current_best_pt(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec);
@@ -353,6 +355,26 @@ void algorithmRunner() {
     releasePoints(candidates);
 }
 
+vector<vector<double>> read_convex_hull_vertices(){
+    ifstream ifs("ext_pt");
+    vector<vector<double>> vertices;
+    if(!ifs.is_open()) return vertices;
+    int dim, size;
+    ifs >> dim >> size;
+    for(int i = 0; i < size; ++i){
+        double sum = 0;
+        vector<double> point;
+        double val;
+        for(int j = 0; j < dim; ++j){
+            ifs >> val;
+            sum += val;
+            point.push_back(val);
+        }
+        if(sum > 0.9) vertices.push_back(point);
+    }
+    return vertices;
+}
+
 #ifdef EMSCRIPTEN
 
 #include <emscripten/bind.h>
@@ -374,6 +396,8 @@ EMSCRIPTEN_BINDINGS(my_module) {
     
     register_vector<Range>("Ranges");
     register_vector<int>("VectorInt");
+    register_vector<double>("VectorDouble");
+    register_vector<vector<double>>("VecVecDouble");
 
     class_<Dataset>("Dataset")
         .constructor<string>()
@@ -391,6 +415,7 @@ EMSCRIPTEN_BINDINGS(my_module) {
         ;
 
     emscripten::function("releasePoints", &releasePoints);
+    emscripten::function("read_convex_hull_vertices", &read_convex_hull_vertices);
 }
 
 #else

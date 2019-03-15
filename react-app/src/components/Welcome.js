@@ -83,7 +83,7 @@ class Welcome extends React.Component {
               disabled={disabled}
             />
           </td>
-          <td className="align-middle">
+          <td className="align-middle hidden">
             <input
               type="checkbox"
               checked={disabled}
@@ -110,7 +110,7 @@ class Welcome extends React.Component {
               <th className="align-middle">Attribute</th>
               <th>Lower bound</th>
               <th>Upper bound</th>
-              <th className="">Discard</th>
+              <th className="hidden">Discard</th>
             </tr>
           </thead>
           <tbody>{trs}</tbody>
