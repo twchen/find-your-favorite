@@ -31,7 +31,7 @@ function Result({ leftPoints, attributes, mask, numQuestions, restart }) {
               `${leftPoints.length} Cars Left in the Database:`
           }
         </h4>
-        <table className="table table-hover text-center">
+        <table className="table table-hover text-center table-fixed">
           <thead>
             <tr>{ths}</tr>
           </thead>

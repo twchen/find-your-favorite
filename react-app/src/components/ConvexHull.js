@@ -13,53 +13,39 @@ class ConvexHull extends React.Component {
       75,
       width / height,
       0.1,
-      10
+      1000
     )
     this.controls = new THREE.OrbitControls(this.camera, this.mount);
-    this.camera.position.set(1.5, 1.5, 1.5);
+    this.camera.position.set(1.5 , 1.5 , 1.5 );
     this.controls.update();
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setClearColor(0xffffff);
     this.renderer.setSize(width, height);
     this.mount.appendChild(this.renderer.domElement);
-    this.scene.add(new THREE.AxesHelper(1.5));
+    this.scene.add(new THREE.AxesHelper(1));
+
     this.start();
   }
 
   drawGeometry = () => {
-    if (this.props.vertices < 2) return;
+    if (this.props.vertices < 4) return;
     const points = this.props.vertices.map(vertex => new THREE.Vector3(...vertex));
-
-    if (points.length > 3) {
-      const geometry = new THREE.ConvexGeometry(points);
-      const material = new THREE.MeshBasicMaterial({
-        color: 0xff0000,
-        //shading: THREE.FlatShading,
-        polygonOffset: true,
-        polygonOffsetFactor: 1, // positive value pushes polygon further away
-        polygonOffsetUnits: 1,
-        opacity: 0.5,
-        transparent: true
-      });
-      this.mesh = new THREE.Mesh(geometry, material);
-
-      const geo = new THREE.EdgesGeometry(geometry); // or WireframeGeometry
-      const mat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 });
-      const wireframe = new THREE.LineSegments(geo, mat);
-      this.mesh.add(wireframe);
-    } else {
-      const geometry = new THREE.Geometry();
-      points.forEach(point => {
-        geometry.vertices.push(point);
-      });
-      if (points.length === 3) {
-        // line geometry is not closed. Add the first point to close the line.
-        geometry.vertices.push(points[0]);
-      }
-      const material = new THREE.LineBasicMaterial({ color: 0x000000 });
-      this.mesh = new THREE.Line(geometry, material);
-    }
+    const geometry = new THREE.ConvexGeometry(points);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      //shading: THREE.FlatShading,
+      polygonOffset: true,
+      polygonOffsetFactor: 1, // positive value pushes polygon further away
+      polygonOffsetUnits: 1,
+      opacity: 0.5,
+      transparent: true
+    });
+    this.mesh = new THREE.Mesh(geometry, material);
+    const geo = new THREE.EdgesGeometry(geometry); // or WireframeGeometry
+    const mat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 });
+    const wireframe = new THREE.LineSegments(geo, mat);
+    this.mesh.add(wireframe);
     this.scene.add(this.mesh);
   }
 

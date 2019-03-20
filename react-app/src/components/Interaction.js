@@ -145,7 +145,7 @@ class Interaction extends React.Component {
               <tbody>{trs}</tbody>
             </table>
           </div>
-          <div className="col-md-2">
+          <div className="col-md-1">
             <button type="button" className="btn btn-primary" onClick={this.stopInteraction}>
               Stop
             </button>

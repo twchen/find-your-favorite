@@ -12,9 +12,17 @@ function App({ activeComponent }) {
   } else if (activeComponent === "Interaction") {
     return (
       <div>
-        <Interaction />
-        <Visuals />
-        <Stats />
+        <div>
+          <h1>Your Choice</h1>
+          <Interaction />
+        </div>
+        <hr />
+        <div>
+          <h1>Statistics</h1>
+          <Visuals />
+          <Stats />
+        </div>
+        
       </div>
     );
   } else if (activeComponent === "Result") {

@@ -28,13 +28,23 @@ class Histogram extends React.Component {
         <XAxis
           tickValues={this.props.data.map((val, idx) => idx)}
           tickFormat={value => value.toString()}
+          style={{
+            ticks: { fill: 'black' }
+          }}
         />
-        <YAxis />
+        <YAxis
+          style={{
+            ticks: { fill: 'black' }
+          }}
+        />
         <ChartLabel
           text="Question No."
           includeMargin={false}
           xPercent={0.82}
           yPercent={1.06}
+          style={{
+            style: { fill: 'black' }
+          }}
         />
         <ChartLabel
           text="No. of Cars Left"
@@ -43,14 +53,15 @@ class Histogram extends React.Component {
           yPercent={0.05}
           style={{
             transform: 'rotate(-90)',
-            textAnchor: 'end'
+            textAnchor: 'end',
+            style: { fill: 'black' }
           }}
         />
         <VerticalBarSeries color='rgb(0, 123, 255)' onNearestX={this._onNearestX} data={this.props.data} animation />
         {
           this.state.hintValue &&
           <Hint value={this.state.hintValue}>
-            <p style={{ color: 'rgb(90, 90, 90)' }}>Q{this.state.hintValue.x}: {this.state.hintValue.y} Cars Left</p>
+            <p style={{ color: 'black' }}>Q{this.state.hintValue.x}: {this.state.hintValue.y} Cars Left</p>
           </Hint>
         }
       </XYPlot>

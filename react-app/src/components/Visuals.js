@@ -17,14 +17,14 @@ class Visuals extends React.Component {
   render() {
     if (this.attributes.length === 4) {
       return (
-        <div className="row" style={{minWidth: '1000px'}}>
-          <div className="col-6">
+        <div className="row justify-content-center">
+          <div className="col-6" style={{minWidth: '500px'}}>
             <h4>No. of Cars Left vs. No. of Questions Asked</h4>
             <div className="d-flex justify-content-center">
               <Histogram />
             </div>
           </div>
-          <div className="col-6">
+          <div className="col-6" style={{minWidth: '500px'}}>
             <h4>Convex Hull of Preference Plane</h4>
             <ConvextHull />
           </div>
