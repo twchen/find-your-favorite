@@ -4,10 +4,14 @@ import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
 import App from "./components/App";
+import { loadDataset } from "./utils";
 
 window.Module = {
-  onRuntimeInitialized: function() {
-    const dataset = new window.Module.Dataset("car.txt");
+  onRuntimeInitialized: async function() {
+    const [points, labels] = await loadDataset(
+      "./datasets/cars.txt",
+      "./datasets/labelsOfCars.txt"
+    );
     const attributes = [
       ["Price (USD)", { low: 1000, high: 50000, smallerBetter: true }],
       ["Year", { low: 2001, high: 2017, smallerBetter: false }],
@@ -21,8 +25,9 @@ window.Module = {
 
     const store = createStore(
       rootReducer,
-      { dataset, attributes, mask }
-      //, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+      { points, labels, attributes, mask },
+      window.__REDUX_DEVTOOLS_EXTENSION__ &&
+        window.__REDUX_DEVTOOLS_EXTENSION__()
     );
     render(
       <Provider store={store}>

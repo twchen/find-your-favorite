@@ -1,9 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
+import classNames from "classnames";
 import { setActiveComponent, restart } from "../actions";
 import Histogram from "./Histogram";
 
-function Result({ leftPoints, attributes, mask, numQuestions, restart }) {
+function Result({
+  labels,
+  candidates,
+  leftPoints,
+  attributes,
+  mask,
+  numLeftPoints,
+  restart
+}) {
   let ths = [];
   attributes.forEach(([attr, config]) => {
     if (mask[attr]) {
@@ -11,37 +20,35 @@ function Result({ leftPoints, attributes, mask, numQuestions, restart }) {
       ths.push(th);
     }
   });
-  const trs = leftPoints.map((point, idx) => (
-    <tr key={idx}>
-      {point.slice(1).map((x, idx) => (
-        <td key={idx}>{x}</td>
+  const trs = leftPoints.map((idx, i) => (
+    <tr key={i} data-toggle="tooltip" title={labels[idx]}>
+      {candidates[idx].map((x, j) => (
+        <td key={j}>{x}</td>
       ))}
     </tr>
   ));
   return (
-    <div className="row justify-content-center">
-      <div className="col">
-        <h4>
-          The Total No. of Questions Asked is: {numQuestions}.
-        </h4>
-        <h4>
-          {
-            leftPoints.length === 1 ?
-              "Your Favourite Car is:" :
-              `${leftPoints.length} Cars Left in the Database:`
-          }
-        </h4>
-        <table className="table table-hover text-center table-fixed">
-          <thead>
-            <tr>{ths}</tr>
-          </thead>
-          <tbody>
-            {trs}
-          </tbody>
-        </table>
-        <div className="d-flex justify-content-center">
-          <Histogram />
-        </div>
+    <div className="justify-content-center">
+      <h4>The Total No. of Questions Asked is: {numLeftPoints.length - 1}.</h4>
+      <h4>
+        {leftPoints.length === 1
+          ? "Your Favourite Car is:"
+          : `${leftPoints.length} Cars Left in the Database:`}
+      </h4>
+      <table
+        className={classNames("table", "table-hover", {
+          "table-fixed": trs.length > 7
+        })}
+      >
+        <thead>
+          <tr>{ths}</tr>
+        </thead>
+        <tbody>{trs}</tbody>
+      </table>
+      <div className="d-flex justify-content-center">
+        <Histogram />
+      </div>
+      <div>
         <button type="button" className="btn btn-primary" onClick={restart}>
           Return to Welcome
         </button>
@@ -50,11 +57,20 @@ function Result({ leftPoints, attributes, mask, numQuestions, restart }) {
   );
 }
 
-const mapStateToProps = ({ leftPoints, attributes, mask, numQuestions }) => ({
+const mapStateToProps = ({
+  labels,
+  candidates,
   leftPoints,
   attributes,
   mask,
-  numQuestions
+  numLeftPoints
+}) => ({
+  labels,
+  candidates,
+  leftPoints,
+  attributes,
+  mask,
+  numLeftPoints
 });
 
 const mapDispatchToProps = dispatch => ({

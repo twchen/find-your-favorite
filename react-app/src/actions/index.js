@@ -2,7 +2,6 @@ export const SET_ACTIVE_COMPONENT = "SET_ACTIVE_COMPONENT";
 export const SET_CANDIDATES = "SET_CANDIDATES";
 export const SET_DATASET = "SET_DATASET";
 export const TOGGLE_MASK = "TOGGLE_MASK";
-export const INCREMENT_QCOUNT = "INCREMENT_QCOUNT";
 export const PRUNE_POINTS = "PRUNE_POINTS";
 export const SET_LEFT_POINTS = "SET_LEFT_POINTS";
 export const SET_MODE = "SET_MODE";
@@ -19,9 +18,10 @@ export const setCandidates = candidates => ({
   candidates
 });
 
-export const setDataset = (dataset, attributes) => ({
+export const setDataset = (points, labels, attributes) => ({
   type: SET_DATASET,
-  dataset,
+  points,
+  labels,
   attributes
 });
 
@@ -30,19 +30,15 @@ export const toggleMask = (attr, val) => ({
   mask: { [attr]: val }
 });
 
-export const incrementQCount = () => ({
-  type: INCREMENT_QCOUNT
-});
-
-export const prunePoints = (points, indices) => ({
+export const prunePoints = (indices, step) => ({
   type: PRUNE_POINTS,
-  points,
-  indices
+  indices,
+  step
 });
 
-export const setLeftPoints = points => ({
+export const setLeftPoints = indices => ({
   type: SET_LEFT_POINTS,
-  points
+  indices
 });
 
 export const changeMode = mode => ({
@@ -54,7 +50,7 @@ export const restart = () => ({
   type: RESTART
 });
 
-export const updateConvexHull = (vertices) => ({
+export const updateConvexHull = vertices => ({
   type: UPDATE_CONVEX_HULL,
   vertices
 });

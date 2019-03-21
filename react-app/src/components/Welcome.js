@@ -6,6 +6,7 @@ import {
   changeMode
 } from "../actions";
 import { connect } from "react-redux";
+import { selectCandidates } from "../utils";
 
 class Welcome extends React.Component {
   constructor(props) {
@@ -18,36 +19,41 @@ class Welcome extends React.Component {
   }
 
   handleStart = () => {
-    const ranges = new window.Module.Ranges();
-    const mask = new window.Module.VectorInt();
-    const regex = /^\d+$/;
+    const ranges = [];
+    const mask = [];
     for (let i = 0; i < this.props.attributes.length; ++i) {
       const [attr, config] = this.props.attributes[i];
       const range = [config.low, config.high];
       if (this.props.mask[attr]) {
         for (let j = 0; j < 2; ++j) {
-          const str = this.inputs[attr][j].current.value.trim();
+          const str = this.inputs[attr][j].current.value;
           if (str === "") continue;
-          else if (regex.test(str)) range[j] = parseInt(str);
-          else {
-            alert(`${str} in ${attr} range is not an integer`);
+          else if (isNaN(str)) {
+            alert(`${str} in range of ${attr} is not an integer`);
             return;
+          } else {
+            range[j] = parseFloat(str);
           }
         }
       }
-      ranges.push_back(range);
-      mask.push_back(this.props.mask[attr]);
+      ranges.push(range);
+      mask.push(this.props.mask[attr]);
     }
-    let maxPoints = 1000;
-    const str = this.inputs.maxPoints.current.value.trim();
-    if (str !== "" && regex.test(str)) maxPoints = parseInt(str);
-    const candidates = this.props.dataset.selectCandidates(
+    let maxPoints;
+    const str = this.inputs.maxPoints.current.value;
+    if (str === "") maxPoints = 1000;
+    else if (/\d+/.test(str)) maxPoints = parseInt(str);
+    else {
+      alert(`${str} for Max No. of Cars is not an integer`);
+      return;
+    }
+    const candidates = selectCandidates(
+      this.props.points,
       ranges,
       mask,
       maxPoints
     );
-    if (candidates.size() === 0) {
-      window.Module.releasePoints(candidates);
+    if (candidates.length === 0) {
       alert("No matching cars, try larger ranges");
       return;
     }
@@ -95,14 +101,65 @@ class Welcome extends React.Component {
         </tr>
       );
     });
+    trs.push(
+      <tr key="other">
+        <td className="align-middle font-weight-bold">Max No. of Cars</td>
+        <td>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="1000"
+            ref={this.inputs.maxPoints}
+          />
+        </td>
+        <td>
+          <div className="col form-inline align-items-center">
+            <label className="mr-4 col-form-label font-weight-bold">Mode</label>
+            <div className="mr-3 form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                id="simplex"
+                value="simplex"
+                checked={this.props.mode === "simplex"}
+                onChange={this.handleModeChange}
+              />
+              <label className="form-check-label" htmlFor="simplex">
+                Simplex
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                id="random"
+                value="random"
+                checked={this.props.mode === "random"}
+                onChange={this.handleModeChange}
+              />
+              <label className="form-check-label" htmlFor="random">
+                Random
+              </label>
+            </div>
+          </div>
+        </td>
+        <td />
+      </tr>
+    );
     return (
       <div className="text-center m-auto" style={{ maxWidth: "50rem" }}>
         <h1>Find Your Favorite!</h1>
         <p className="lead text-muted">
-          This is a demostration of an interactive system for finding your favorite car in a used car database. <br />
-          Enter your acceptable range for each attribute (leave blank to use the default). <br />
-          You will be presented two cars each time and you need to choose the one you favor more. <br />
-          Click the "Start" button to find your favorite car in the database! <br />
+          This is a demostration of an interactive system for finding your
+          favorite car in a used car database. <br />
+          Enter your acceptable range for each attribute (leave blank to use the
+          default). <br />
+          You will be presented two cars each time and you need to choose the
+          one you favor more. <br />
+          Click the "Start" button to find your favorite car in the database!{" "}
+          <br />
         </p>
         <table className="table">
           <thead>
@@ -115,83 +172,25 @@ class Welcome extends React.Component {
           </thead>
           <tbody>{trs}</tbody>
         </table>
-        <form>
-          <div className="form-group row align-items-center">
-            <div className="col-6">
-              <div className="row align-items-center">
-                <label htmlFor="maxPoints" className="col-4 col-form-label">
-                  Max No. of Cars
-                </label>
-                <div className="col">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="maxPoints"
-                    placeholder="1000"
-                    ref={this.inputs.maxPoints}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="col-6">
-              <div className="row align-items-center">
-                <label className="col-4 col-form-label">Mode</label>
-                <div className="col text-left">
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="inlineRadioOptions"
-                      id="simplex"
-                      value="simplex"
-                      checked={this.props.mode === "simplex"}
-                      onChange={this.handleModeChange}
-                    />
-                    <label className="form-check-label" htmlFor="simplex">
-                      Simplex
-                    </label>
-                  </div>
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="inlineRadioOptions"
-                      id="random"
-                      value="random"
-                      checked={this.props.mode === "random"}
-                      onChange={this.handleModeChange}
-                    />
-                    <label className="form-check-label" htmlFor="random">
-                      Random
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="form-group row">
-            <div className="col">
-              <button
-                type="button"
-                className="btn btn-primary"
-                style={{ width: "8rem" }}
-                onClick={this.handleStart}
-              >
-                Start
-              </button>
-            </div>
-          </div>
-        </form>
+        <div>
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ width: "8rem" }}
+            onClick={this.handleStart}
+          >
+            Start
+          </button>
+        </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ attributes, mask, dataset, mode }) => ({
+const mapStateToProps = ({ attributes, mask, points, mode }) => ({
   attributes,
   mask,
-  dataset,
+  points,
   mode
 });
 

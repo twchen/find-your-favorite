@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import classNames from "classnames";
 
 class Stats extends React.Component {
   constructor(props) {
@@ -17,39 +18,53 @@ class Stats extends React.Component {
     this.attributes.forEach(attr => {
       ths.push(<th key={attr}>{attr}</th>);
     });
-    const prunedTrs = this.props.prunedPoints.map((point, idx) => (
-      <tr key={idx}>
-        {point.slice(1).map((x, idx) => (
-          <td key={idx}>{x}</td>
+    const prunedTrs = this.props.prunedPoints.map(([idx, step], i) => (
+      <tr key={i} data-toggle="tooltip" title={this.props.labels[idx]}>
+        {[step, ...this.props.candidates[idx]].map((x, j) => (
+          <td key={j}>{x}</td>
         ))}
       </tr>
     ));
-    const leftTrs = this.props.leftPoints.map((point, idx) => (
-      <tr key={idx}>
-        {point.slice(1).map((x, idx) => (
-          <td key={idx}>{x}</td>
+    const leftTrs = this.props.leftPoints.map((idx, i) => (
+      <tr key={i} data-toggle="tooltip" title={this.props.labels[idx]}>
+        {this.props.candidates[idx].map((x, j) => (
+          <td key={j}>{x}</td>
         ))}
       </tr>
     ));
     return (
-      <div className="row">
-        <div className="col">
-          <h4>The No. of Cars Pruned: {this.props.prunedPoints.length}</h4>
-          <table className="table table-hover table-fixed">
-            <thead>
-              <tr>{ths}</tr>
-            </thead>
-            <tbody>{prunedTrs}</tbody>
-          </table>
-        </div>
-        <div className="col">
-          <h4>The No. of Cars Left in the Database: {this.props.leftPoints.length}</h4>
-          <table className="table table-hover table-fixed">
-            <thead>
-              <tr>{ths.slice(1)}</tr>
-            </thead>
-            <tbody>{leftTrs}</tbody>
-          </table>
+      <div>
+        <h2>Statistics</h2>
+        <div className="row">
+          <div className="col">
+            <h4>The No. of Cars Pruned: {this.props.prunedPoints.length}</h4>
+            <table
+              className={classNames("table", "table-hover", {
+                "table-fixed": prunedTrs.length > 7
+              })}
+            >
+              <thead>
+                <tr>{ths}</tr>
+              </thead>
+              <tbody>{prunedTrs}</tbody>
+            </table>
+          </div>
+          <div className="col">
+            <h4>
+              The No. of Cars Left in the Database:{" "}
+              {this.props.leftPoints.length}
+            </h4>
+            <table
+              className={classNames("table", "table-hover", {
+                "table-fixed": leftTrs.length > 7
+              })}
+            >
+              <thead>
+                <tr>{ths.slice(1)}</tr>
+              </thead>
+              <tbody>{leftTrs}</tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
@@ -57,17 +72,19 @@ class Stats extends React.Component {
 }
 
 const mapStateToPropsStats = ({
+  labels,
+  candidates,
   prunedPoints,
   leftPoints,
   attributes,
-  mask,
-  numQuestions
+  mask
 }) => ({
+  labels,
+  candidates,
   prunedPoints,
   leftPoints,
   attributes,
-  mask,
-  numQuestions
+  mask
 });
 
 export default connect(mapStateToPropsStats)(Stats);

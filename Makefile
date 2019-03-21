@@ -47,10 +47,10 @@ clean:
 	-rm $(EM_OBJDIR)/* ./web.*
 
 
-web: web.js
+web: react-app/public/web.js
 
-web.js: $(filter-out embin/main.cpp.o, $(EM_OBJECTS))
-	$(EMXX) --bind $(EM_LIB) $^ -o $@ $(LIBRARIES) --preload-file input
+react-app/public/web.js: $(filter-out embin/main.cpp.o, $(EM_OBJECTS))
+	$(EMXX) --bind $(EM_LIB) $^ -o $@ $(LIBRARIES)
 	# -s ENVIRONMENT=node
 	# -s MODULARIZE=1 -s EXPORT_ES6=1
 	# -s ALLOW_MEMORY_GROWTH=1

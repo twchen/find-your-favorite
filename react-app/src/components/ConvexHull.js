@@ -1,36 +1,33 @@
-import React from 'react';
-import { connect } from "react-redux";
-import THREE from './three';
+import React from "react";
+import THREE from "./three";
 
 class ConvexHull extends React.Component {
   componentDidMount() {
-    const width = this.mount.clientWidth
-    const height = this.mount.clientHeight
+    const width = this.mount.clientWidth;
+    const height = this.mount.clientHeight;
 
-    this.scene = new THREE.Scene()
+    this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      width / height,
-      0.1,
-      1000
-    )
+    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     this.controls = new THREE.OrbitControls(this.camera, this.mount);
-    this.camera.position.set(1.5 , 1.5 , 1.5 );
+    this.camera.position.set(1.5, 1.5, 1.5);
     this.controls.update();
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setClearColor(0xffffff);
     this.renderer.setSize(width, height);
     this.mount.appendChild(this.renderer.domElement);
-    this.scene.add(new THREE.AxesHelper(1));
-
+    const axes = new THREE.AxesHelper(1);
+    this.scene.add(axes);
+    this.drawGeometry();
     this.start();
   }
 
   drawGeometry = () => {
-    if (this.props.vertices < 4) return;
-    const points = this.props.vertices.map(vertex => new THREE.Vector3(...vertex));
+    if (this.props.vertices.length < 4) return;
+    const points = this.props.vertices.map(
+      vertex => new THREE.Vector3(...vertex)
+    );
     const geometry = new THREE.ConvexGeometry(points);
     const material = new THREE.MeshBasicMaterial({
       color: 0xff0000,
@@ -47,7 +44,7 @@ class ConvexHull extends React.Component {
     const wireframe = new THREE.LineSegments(geo, mat);
     this.mesh.add(wireframe);
     this.scene.add(this.mesh);
-  }
+  };
 
   componentDidUpdate(prevProps) {
     if (this.props.vertices !== prevProps.vertices) {
@@ -69,28 +66,28 @@ class ConvexHull extends React.Component {
     if (!this.frameId) {
       this.frameId = window.requestAnimationFrame(this.animate);
     }
-  }
+  };
 
   stop = () => {
-    window.cancelAnimationFrame(this.frameId)
-  }
+    window.cancelAnimationFrame(this.frameId);
+  };
 
   animate = () => {
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
     this.frameId = window.requestAnimationFrame(this.animate);
-  }
+  };
 
   render() {
     return (
       <div
-        style={{ width: '400px', height: '400px', margin: 'auto' }}
-        ref={(mount) => { this.mount = mount }}
+        style={{ width: "25rem", height: "25rem" }}
+        ref={mount => {
+          this.mount = mount;
+        }}
       />
-    )
+    );
   }
 }
 
-const mapStateToProps = ({ vertices }) => ({ vertices });
-
-export default connect(mapStateToProps)(ConvexHull);
+export default ConvexHull;

@@ -4,7 +4,6 @@ import {
   SET_DATASET,
   SET_CANDIDATES,
   TOGGLE_MASK,
-  INCREMENT_QCOUNT,
   SET_LEFT_POINTS,
   PRUNE_POINTS,
   SET_MODE,
@@ -21,10 +20,19 @@ const activeComponent = (state = "Welcome", action) => {
   }
 };
 
-const dataset = (state = null, action) => {
+const points = (state = null, action) => {
   switch (action.type) {
     case SET_DATASET:
-      return action.dataset;
+      return action.points;
+    default:
+      return state;
+  }
+};
+
+const labels = (state = null, action) => {
+  switch (action.type) {
+    case SET_DATASET:
+      return action.labels;
     default:
       return state;
   }
@@ -63,36 +71,26 @@ const mask = (state = null, action) => {
   }
 };
 
-const numQuestions = (state = 0, action) => {
-  switch (action.type) {
-    case RESTART:
-      return 0;
-    case INCREMENT_QCOUNT:
-      return state + 1;
-    default:
-      return state;
-  }
-};
-
-// array of [idx, step no., attributes]
+// array of [idx, step no.]
 const prunedPoints = (state = [], action) => {
   switch (action.type) {
     case RESTART:
       return [];
     case PRUNE_POINTS:
-      return [...action.points, ...state];
+      const points = action.indices.map(idx => [idx, action.step]);
+      return [...points, ...state];
     default:
       return state;
   }
 };
 
-// array of [idx, attributes...]
+// array of indices
 const leftPoints = (state = [], action) => {
   switch (action.type) {
     case SET_LEFT_POINTS:
-      return action.points;
+      return action.indices;
     case PRUNE_POINTS:
-      return state.filter(x => !action.indices.includes(x[0]));
+      return state.filter(idx => action.indices.indexOf(idx) === -1);
     default:
       return state;
   }
@@ -102,14 +100,14 @@ const leftPoints = (state = [], action) => {
 const numLeftPoints = (state = [], action) => {
   switch (action.type) {
     case SET_LEFT_POINTS:
-      return [action.points.length];
+      return [action.indices.length];
     case PRUNE_POINTS:
       const prev = state[state.length - 1];
-      return [...state, prev - action.points.length];
+      return [...state, prev - action.indices.length];
     default:
       return state;
   }
-}
+};
 
 const mode = (state = "simplex", action) => {
   switch (action.type) {
@@ -127,15 +125,15 @@ const vertices = (state = [], action) => {
     default:
       return state;
   }
-}
+};
 
 export default combineReducers({
   activeComponent,
-  dataset,
+  points,
+  labels,
   attributes,
   candidates,
   mask,
-  numQuestions,
   prunedPoints,
   leftPoints,
   numLeftPoints,
