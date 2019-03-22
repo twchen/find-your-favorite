@@ -87,6 +87,8 @@ const prunedPoints = (state = [], action) => {
 // array of indices
 const leftPoints = (state = [], action) => {
   switch (action.type) {
+    case RESTART:
+      return [];
     case SET_LEFT_POINTS:
       return action.indices;
     case PRUNE_POINTS:

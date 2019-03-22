@@ -42,6 +42,9 @@ class Stats extends React.Component {
               className={classNames("table", "table-hover", {
                 "table-fixed": prunedTrs.length > 7
               })}
+              style={{
+                minWidth: "37rem"
+              }}
             >
               <thead>
                 <tr>{ths}</tr>
@@ -58,6 +61,9 @@ class Stats extends React.Component {
               className={classNames("table", "table-hover", {
                 "table-fixed": leftTrs.length > 7
               })}
+              style={{
+                minWidth: "30rem"
+              }}
             >
               <thead>
                 <tr>{ths.slice(1)}</tr>

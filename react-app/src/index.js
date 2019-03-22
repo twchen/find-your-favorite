@@ -25,9 +25,8 @@ window.Module = {
 
     const store = createStore(
       rootReducer,
-      { points, labels, attributes, mask },
-      window.__REDUX_DEVTOOLS_EXTENSION__ &&
-        window.__REDUX_DEVTOOLS_EXTENSION__()
+      { points, labels, attributes, mask }
+      // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     );
     render(
       <Provider store={store}>

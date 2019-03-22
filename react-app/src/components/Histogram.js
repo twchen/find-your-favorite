@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import {
-  XYPlot,
+  FlexibleXYPlot,
   XAxis,
   YAxis,
   Hint,
@@ -33,53 +33,55 @@ class Histogram extends React.Component {
     return (
       <div>
         <h4>No. of Cars Left vs. No. of Questions Asked</h4>
-        <XYPlot onMouseLeave={this._onMouseLeave} height={400} width={400}>
-          <XAxis
-            tickValues={this.props.data.map((val, idx) => idx)}
-            tickFormat={value => value.toString()}
-            style={{
-              ticks: { fill: "black" }
-            }}
-          />
-          <YAxis
-            style={{
-              ticks: { fill: "black" }
-            }}
-          />
-          <ChartLabel
-            text="Question No."
-            includeMargin={false}
-            xPercent={0.82}
-            yPercent={1.06}
-            style={{
-              style: { fill: "black" }
-            }}
-          />
-          <ChartLabel
-            text="No. of Cars Left"
-            includeMargin={false}
-            xPercent={-0.01}
-            yPercent={0.05}
-            style={{
-              transform: "rotate(-90)",
-              textAnchor: "end",
-              style: { fill: "black" }
-            }}
-          />
-          <VerticalBarSeries
-            color="rgb(0, 123, 255)"
-            onNearestX={this._onNearestX}
-            data={this.props.data}
-            animation
-          />
-          {this.state.hintValue && (
-            <Hint value={this.state.hintValue}>
-              <p style={{ color: "black" }}>
-                Q{this.state.hintValue.x}: {this.state.hintValue.y} Cars Left
-              </p>
-            </Hint>
-          )}
-        </XYPlot>
+        <div style={{ width: "25rem", height: "25rem" }}>
+          <FlexibleXYPlot onMouseLeave={this._onMouseLeave}>
+            <XAxis
+              tickValues={this.props.data.map((val, idx) => idx)}
+              tickFormat={value => value.toString()}
+              style={{
+                ticks: { fill: "black" }
+              }}
+            />
+            <YAxis
+              style={{
+                ticks: { fill: "black" }
+              }}
+            />
+            <ChartLabel
+              text="Question No."
+              includeMargin={false}
+              xPercent={0.82}
+              yPercent={1.06}
+              style={{
+                style: { fill: "black" }
+              }}
+            />
+            <ChartLabel
+              text="No. of Cars Left"
+              includeMargin={false}
+              xPercent={-0.01}
+              yPercent={0.05}
+              style={{
+                transform: "rotate(-90)",
+                textAnchor: "end",
+                style: { fill: "black" }
+              }}
+            />
+            <VerticalBarSeries
+              color="rgb(0, 123, 255)"
+              onNearestX={this._onNearestX}
+              data={this.props.data}
+              animation
+            />
+            {this.state.hintValue && (
+              <Hint value={this.state.hintValue}>
+                <p style={{ color: "black" }}>
+                  Q{this.state.hintValue.x}: {this.state.hintValue.y} Cars Left
+                </p>
+              </Hint>
+            )}
+          </FlexibleXYPlot>
+        </div>
       </div>
     );
   }

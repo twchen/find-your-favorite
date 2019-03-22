@@ -26,7 +26,7 @@ class Welcome extends React.Component {
       const range = [config.low, config.high];
       if (this.props.mask[attr]) {
         for (let j = 0; j < 2; ++j) {
-          const str = this.inputs[attr][j].current.value;
+          const str = this.inputs[attr][j].current.value.trim();
           if (str === "") continue;
           else if (isNaN(str)) {
             alert(`${str} in range of ${attr} is not an integer`);
@@ -40,7 +40,7 @@ class Welcome extends React.Component {
       mask.push(this.props.mask[attr]);
     }
     let maxPoints;
-    const str = this.inputs.maxPoints.current.value;
+    const str = this.inputs.maxPoints.current.value.trim();
     if (str === "") maxPoints = 1000;
     else if (/\d+/.test(str)) maxPoints = parseInt(str);
     else {

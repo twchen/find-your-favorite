@@ -39,13 +39,17 @@ function Result({
         className={classNames("table", "table-hover", {
           "table-fixed": trs.length > 7
         })}
+        style={{
+          maxWidth: "40rem",
+          margin: "auto"
+        }}
       >
         <thead>
           <tr>{ths}</tr>
         </thead>
         <tbody>{trs}</tbody>
       </table>
-      <div className="d-flex justify-content-center">
+      <div className="d-flex justify-content-center my-3">
         <Histogram />
       </div>
       <div>

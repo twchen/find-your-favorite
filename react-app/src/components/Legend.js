@@ -49,8 +49,10 @@ class Legend extends React.Component {
     };
     return (
       <div
-        title="Each axis has a length of 1. Click the arrows to change the selected
-      attributes for displaying convex hull."
+        title="Click the arrows to change the selected attributes for displaying the convex hull."
+        style={{
+          width: "12rem"
+        }}
       >
         <div
           style={{

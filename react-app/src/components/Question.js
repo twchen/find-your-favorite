@@ -27,11 +27,13 @@ class Interaction extends React.Component {
         this.attributes.push(attr);
       }
     });
+    const candidatesVec = array2Vector2D(this.props.candidates);
     this.runner = new window.Module.AlgorithmRunner(
-      array2Vector2D(this.props.candidates),
+      candidatesVec,
       smallerBetter,
       this.props.mode === "random" ? RANDOM : SIMPLEX
     );
+    candidatesVec.delete();
     this.prevIndices = this.runner.getCandidatesIndices();
     this.props.setLeftPoints(vector2Array(this.prevIndices));
     if (this.prevIndices.size() < 2) {
@@ -60,6 +62,7 @@ class Interaction extends React.Component {
     const prunedIndices = getPrunedIndices(this.prevIndices, currIndices);
     const questioNo = this.props.numLeftPoints.length;
     this.props.prunePoints(prunedIndices, questioNo);
+    this.prevIndices.delete();
     this.prevIndices = currIndices;
     if (currIndices.size() < 2) {
       this.stopInteraction();
@@ -72,6 +75,8 @@ class Interaction extends React.Component {
   };
 
   stopInteraction = () => {
+    this.prevIndices.delete();
+    this.runner.delete();
     this.props.showResult();
   };
 

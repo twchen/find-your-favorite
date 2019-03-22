@@ -66,6 +66,7 @@ export const array2Vector2D = array => {
     const vec = new window.Module.VectorDouble();
     arr.forEach(x => vec.push_back(x));
     vector.push_back(vec);
+    vec.delete();
   });
   return vector;
 };
