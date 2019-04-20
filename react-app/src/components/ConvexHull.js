@@ -55,9 +55,31 @@ class ConvexHull extends React.Component {
     this.scene.add(axes);
     const typeface = require("three/examples/fonts/helvetiker_regular.typeface.json");
     const font = new THREE.Font(typeface);
-    let color = 0xff0000;
-    const meshes = [];
-    for (let i = 0; i < 3; ++i) {
+
+    const numConfig = [
+      // color, position, rotation
+      [
+        0xff0000,
+        [SCALE + SCALE / (FACTOR * 2), 0, 0],
+        [Math.PI / 2, Math.PI, 0]
+      ],
+      [
+        0x00ff00,
+        [0, SCALE - SCALE / (FACTOR * 2), 0],
+        [Math.PI / 2, Math.PI / 2, 0]
+      ],
+      [
+        0x0000ff,
+        [
+          SCALE / (FACTOR * Math.sqrt(2)),
+          -SCALE / (FACTOR * Math.sqrt(2)),
+          SCALE
+        ],
+        [Math.PI / 2, (Math.PI * 3) / 4, 0]
+      ]
+    ];
+
+    numConfig.forEach(([color, position, rotation]) => {
       const shape = font.generateShapes("1", SCALE / FACTOR);
       const geometry = new THREE.ShapeBufferGeometry(shape);
       const mesh = new THREE.Mesh(
@@ -67,20 +89,31 @@ class ConvexHull extends React.Component {
           side: THREE.DoubleSide
         })
       );
+      mesh.position.set(...position);
+      mesh.rotation.set(...rotation);
       this.scene.add(mesh);
-      color >>= 8;
-      meshes.push(mesh);
-    }
-    meshes[0].rotation.set(Math.PI / 2, Math.PI, 0);
-    meshes[0].position.set(SCALE + SCALE / (FACTOR * 2), 0, 0);
-    meshes[1].rotation.set(Math.PI / 2, Math.PI / 2, 0);
-    meshes[1].position.set(0, SCALE - SCALE / (FACTOR * 2), 0);
-    meshes[2].rotation.set(Math.PI / 2, (Math.PI * 3) / 4, 0);
-    meshes[2].position.set(
-      SCALE / (FACTOR * Math.sqrt(2)),
-      -SCALE / (FACTOR * Math.sqrt(2)),
-      SCALE
-    );
+    });
+    window.lines = [];
+    const lineConfig = [
+      [0xff0000, [SCALE, 0, 0], [0, 0, 0]],
+      [0x00ff00, [0, SCALE, 0], [0, 0, -Math.PI / 2]],
+      [0x0000ff, [0, 0, SCALE], [0, 0, -Math.PI / 2]]
+    ];
+    lineConfig.forEach(([color, position, rotation]) => {
+      const material = new THREE.LineBasicMaterial({
+        color
+      });
+      const geometry = new THREE.Geometry();
+      geometry.vertices.push(
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, SCALE / (2 * FACTOR))
+      );
+      const line = new THREE.Line(geometry, material);
+      line.position.set(...position);
+      line.rotation.set(...rotation);
+      this.scene.add(line);
+      window.lines.push(line);
+    });
   };
 
   componentDidUpdate(prevProps) {

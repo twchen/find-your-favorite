@@ -40,9 +40,9 @@ class Interaction extends React.Component {
       this.state = { pair: [] };
       this.stopInteraction();
     } else {
-      const convexHullVertices = vector2Array2D(
-        window.Module.readConvexHullVertices()
-      );
+      const vec = window.Module.readConvexHullVertices();
+      const convexHullVertices = vector2Array2D(vec);
+      vec.delete();
       this.props.updateConvexHull(convexHullVertices);
       const indices = this.runner.nextPair();
       this.state = {
