@@ -49,191 +49,14 @@ int isatty(int);  /* returns 1 if stdin is a tty
 #endif
 #endif
 
-char qh_prompta[]= "\n\
-qhalf- compute the intersection of halfspaces about a point\n\
-    http://www.qhull.org  %s\n\
-\n\
-input (stdin):\n\
-    optional interior point: dimension, 1, coordinates\n\
-    first lines: dimension+1 and number of halfspaces\n\
-    other lines: halfspace coefficients followed by offset\n\
-    comments:    start with a non-numeric character\n\
-\n\
-options:\n\
-    Hn,n - specify coordinates of interior point\n\
-    Qt   - triangulated output\n\
-    QJ   - joggled input instead of merged facets\n\
-    Qc   - keep coplanar halfspaces\n\
-    Qi   - keep other redundant halfspaces\n\
-\n\
-Qhull control options:\n\
-    QJn  - randomly joggle input in range [-n,n]\n\
-%s%s%s%s";  /* split up qh_prompt for Visual C++ */
-char qh_promptb[]= "\
-    Qbk:0Bk:0 - remove k-th coordinate from input\n\
-    Qs   - search all halfspaces for the initial simplex\n\
-    QGn  - print intersection if visible to halfspace n, -n for not\n\
-    QVn  - print intersections for halfspace n, -n if not\n\
-\n\
-";
-char qh_promptc[]= "\
-Trace options:\n\
-    T4   - trace at level n, 4=all, 5=mem/gauss, -1= events\n\
-    Tc   - check frequently during execution\n\
-    Ts   - print statistics\n\
-    Tv   - verify result: structure, convexity, and redundancy\n\
-    Tz   - send all output to stdout\n\
-    TFn  - report summary when n or more facets created\n\
-    TI file - input data from file, no spaces or single quotes\n\
-    TO file - output results to file, may be enclosed in single quotes\n\
-    TPn  - turn on tracing when halfspace n added to intersection\n\
-    TMn  - turn on tracing at merge n\n\
-    TWn  - trace merge facets when width > n\n\
-    TVn  - stop qhull after adding halfspace n, -n for before (see TCn)\n\
-    TCn  - stop qhull after building cone for halfspace n (see TVn)\n\
-\n\
-Precision options:\n\
-    Cn   - radius of centrum (roundoff added).  Merge facets if non-convex\n\
-     An  - cosine of maximum angle.  Merge facets if cosine > n or non-convex\n\
-           C-0 roundoff, A-0.99/C-0.01 pre-merge, A0.99/C0.01 post-merge\n\
-    Rn   - randomly perturb computations by a factor of [1-n,1+n]\n\
-    Un   - max distance below plane for a new, coplanar halfspace\n\
-    Wn   - min facet width for outside halfspace (before roundoff)\n\
-\n\
-Output formats (may be combined; if none, produces a summary to stdout):\n\
-    f    - facet dump\n\
-    G    - Geomview output (dual convex hull)\n\
-    i    - non-redundant halfspaces incident to each intersection\n\
-    m    - Mathematica output (dual convex hull)\n\
-    o    - OFF format (dual convex hull: dimension, points, and facets)\n\
-    p    - vertex coordinates of dual convex hull (coplanars if 'Qc' or 'Qi')\n\
-    s    - summary (stderr)\n\
-\n\
-";
-char qh_promptd[]= "\
-More formats:\n\
-    Fc   - count plus redundant halfspaces for each intersection\n\
-         -   Qc (default) for coplanar and Qi for other redundant\n\
-    Fd   - use cdd format for input (homogeneous with offset first)\n\
-    FF   - facet dump without ridges\n\
-    FI   - ID of each intersection\n\
-    Fm   - merge count for each intersection (511 max)\n\
-    FM   - Maple output (dual convex hull)\n\
-    Fn   - count plus neighboring intersections for each intersection\n\
-    FN   - count plus intersections for each non-redundant halfspace\n\
-    FO   - options and precision constants\n\
-    Fp   - dim, count, and intersection coordinates\n\
-    FP   - nearest halfspace and distance for each redundant halfspace\n\
-    FQ   - command used for qhalf\n\
-    Fs   - summary: #int (8), dim, #halfspaces, #non-redundant, #intersections\n\
-                      for output: #non-redundant, #intersections, #coplanar\n\
-                                  halfspaces, #non-simplicial intersections\n\
-                    #real (2), max outer plane, min vertex\n\
-    Fv   - count plus non-redundant halfspaces for each intersection\n\
-    Fx   - non-redundant halfspaces\n\
-\n\
-";
-char qh_prompte[]= "\
-Geomview output (2-d, 3-d and 4-d; dual convex hull)\n\
-    Ga   - all points (i.e., transformed halfspaces) as dots\n\
-     Gp  -  coplanar points and vertices as radii\n\
-     Gv  -  vertices (i.e., non-redundant halfspaces) as spheres\n\
-    Gi   - inner planes (i.e., halfspace intersections) only\n\
-     Gn  -  no planes\n\
-     Go  -  outer planes only\n\
-    Gc   - centrums\n\
-    Gh   - hyperplane intersections\n\
-    Gr   - ridges\n\
-    GDn  - drop dimension n in 3-d and 4-d output\n\
-\n\
-Print options:\n\
-    PAn  - keep n largest facets (i.e., intersections) by area\n\
-    Pdk:n- drop facet if normal[k] <= n (default 0.0)\n\
-    PDk:n- drop facet if normal[k] >= n\n\
-    Pg   - print good facets (needs 'QGn' or 'QVn')\n\
-    PFn  - keep facets whose area is at least n\n\
-    PG   - print neighbors of good facets\n\
-    PMn  - keep n facets with most merges\n\
-    Po   - force output.  If error, output neighborhood of facet\n\
-    Pp   - do not report precision problems\n\
-\n\
-    .    - list of all options\n\
-    -    - one line descriptions of all options\n\
-    -V   - version\n\
-";
-
-char qh_prompt2[]= "\n\
-qhalf- halfspace intersection about a point.  Qhull %s\n\
-    input (stdin): [dim, 1, interior point], dim+1, n, coefficients+offset\n\
-    comments start with a non-numeric character\n\
-\n\
-options (qhalf.htm):\n\
-    Hn,n - specify coordinates of interior point\n\
-    Qt   - triangulated output\n\
-    QJ   - joggled input instead of merged facets\n\
-    Tv   - verify result: structure, convexity, and redundancy\n\
-    .    - concise list of all options\n\
-    -    - one-line description of all options\n\
-    -V   - version\n\
-\n\
-output options (subset):\n\
-    s    - summary of results (default)\n\
-    Fp   - intersection coordinates\n\
-    Fv   - non-redundant halfspaces incident to each intersection\n\
-    Fx   - non-redundant halfspaces\n\
-    o    - OFF file format (dual convex hull)\n\
-    G    - Geomview output (dual convex hull)\n\
-    m    - Mathematica output (dual convex hull)\n\
-    QVn  - print intersections for halfspace n, -n if not\n\
-    TO file - output results to file, may be enclosed in single quotes\n\
-\n\
-examples:\n\
-    rbox d | qconvex FQ n | qhalf s H0,0,0 Fp\n\
-    rbox c | qconvex FQ FV n | qhalf s i\n\
-    rbox c | qconvex FQ FV n | qhalf s o\n\
-\n\
-";
-/* for opts, don't assign 'e' or 'E' to a flag (already used for exponent) */
-
-/*-<a                             href="../libqhull/qh-qhull.htm#TOC"
-  >-------------------------------</a><a name="prompt3">-</a>
-
-  qh_prompt3
-    concise prompt for qhull
-*/
-char qh_prompt3[]= "\n\
-Qhull %s.\n\
-Except for 'F.' and 'PG', upper_case options take an argument.\n\
-\n\
- incidences     Geomview       mathematica    OFF_format     point_dual\n\
- summary        facet_dump\n\
-\n\
- Fc_redundant   Fd_cdd_in      FF_dump_xridge FIDs           Fmerges\n\
- Fneighbors     FN_intersect   FOptions       Fp_coordinates FP_nearest\n\
- FQhalf         Fsummary       Fv_halfspace   FMaple         Fx_non_redundant\n\
-\n\
- Gvertices      Gpoints        Gall_points    Gno_planes     Ginner\n\
- Gcentrums      Ghyperplanes   Gridges        Gouter         GDrop_dim\n\
-\n\
- PArea_keep     Pdrop d0:0D0   Pgood          PFacet_area_keep\n\
- PGood_neighbors PMerge_keep   Poutput_forced Pprecision_not\n\
-\n\
- Qbk:0Bk:0_drop Qcoplanar      QG_half_good   Qi_redundant   QJoggle\n\
- Qsearch_1st    Qtriangulate   QVertex_good\n\
-\n\
- T4_trace       Tcheck_often   Tstatistics    Tverify        Tz_stdout\n\
- TFacet_log     TInput_file    TPoint_trace   TMerge_trace   TOutput_file\n\
- TWide_trace    TVertex_stop   TCone_stop\n\
-\n\
- Angle_max      Centrum_size   Random_dist    Ucoplanar_max  Wide_outside\n\
-";
-
+// conduct half space intersection by invoking Qhull based on the data from rPtr and write results to wPtr
 int halfspace(FILE* rPtr, FILE* wPtr) {
 	int curlong, totlong; /* used !qh_NOmem */
 	int exitcode, numpoints, dim;
 	coordT *points;
 	boolT ismalloc;
 
+	// the required parameters
   	int argc = 3;
 	char* argv[3];
 	argv[0] = "qhalf";
@@ -288,6 +111,7 @@ int halfspace(FILE* rPtr, FILE* wPtr) {
 	return exitcode;
 } /* main */
 
+// get the set of extreme points of the candidate utility range R (bounded by the extreme vectors)
 vector<point_t*> get_extreme_pts(vector<point_t*>& ext_vec)
 {
 	int dim = ext_vec[0]->dim;
@@ -310,11 +134,12 @@ vector<point_t*> get_extreme_pts(vector<point_t*>& ext_vec)
 	}
 	point_t* feasible_pt = find_feasible(utility_hyperplane);
 
+	// prepare the file for computing the convex hull (the candidate utility range R) via half space interaction
 	write_hyperplanes(utility_hyperplane, feasible_pt, file1);
 	for(int i = 0; i < utility_hyperplane.size(); i++)
 		release_hyperplane(utility_hyperplane[i]);
 
-	// write hyperplanes and the feasible point to file, conduct half space intersection
+	// write hyperplanes and the feasible point to file1, conduct half space intersection and write reulsts to file2
 	FILE* rPtr;
 	FILE* wPtr;
 	if ((rPtr = fopen(file1, "r")) == NULL)
@@ -327,13 +152,12 @@ vector<point_t*> get_extreme_pts(vector<point_t*>& ext_vec)
 	fclose(rPtr);
 	fclose(wPtr);
 
-	//read extreme points
+	//read extreme points in file2
 	if ((rPtr = fopen(file2, "r")) == NULL)
 	{
 		fprintf(stderr, "Cannot open the data file %s.\n", file2);
 		exit(0);
 	}
-
 	int size;
 	vector<point_t*> ext_pts;
 	fscanf(rPtr, "%i%i", &dim, &size);
@@ -356,8 +180,7 @@ vector<point_t*> get_extreme_pts(vector<point_t*>& ext_vec)
 		}
 	}
 
-
-
+	// update the set of extreme vectors
 	vector<point_t*> new_ext_vec;
 	fscanf(rPtr, "%i", &size);
 	for (int i = 0; i < size; i++)
@@ -394,8 +217,10 @@ void print_summary(void) {
 
 }
 
+// get bounding hyperplanes of the conical hull (used in the conical hull pruning)
 void get_hyperplanes(vector<point_t*>& ext_vec, hyperplane_t*& hp, vector<point_t*>& hyperplanes)
 {
+	//constuct non-trivial extreme vectors
 	vector<int> frame;
 	frameConeLP(ext_vec, frame);
 	vector<point_t*> new_ext_vec;
@@ -407,12 +232,13 @@ void get_hyperplanes(vector<point_t*>& ext_vec, hyperplane_t*& hp, vector<point_
 
 	int dim = ext_vec[0]->dim;
 	
+	// used in the necessary condiditon of conical hull pruning
 	double offset = 0;
 	point_t* normal = alloc_point(dim);
 	for(int i = 0; i < dim; i++)
 		normal->coord[i] = 0;
 
-	//constuct non-trivial hyperplane
+	
 	if(1)
 	{
 		for(int i = 0; i < ext_vec.size(); i++)
@@ -455,35 +281,12 @@ void get_hyperplanes(vector<point_t*>& ext_vec, hyperplane_t*& hp, vector<point_
 		}	
 	}
 
+	// the hyperplane for the necessary condiditon of conical hull pruning
 	hp = alloc_hyperplane(normal, offset);
 
-	//for(int i = 0; i < ext_vec.size(); i ++)
-	//{
-	//	print_point(ext_vec[i]);
-	//	double v = dot_prod(normal, ext_vec[i]);
-	//	printf("dot_prod: %lf \n", v);
-	//}	
 
-	//printf("offset: %lf\n", offset);
-
-
-	//for(int i = 0; i < ext_vec.size(); i ++)
-	//{
-	//	print_point(ext_vec[i]);
-	//	double v = dot_prod(hp->normal, ext_vec[i]);
-	//	//v = compute_intersection_len(hp, ext_vec[i]);
-	//	printf("%lf \n", v);
-	//	if(v < 0 && !isZero(v))
-	//	{
-	//		printf("negative! %lf", v);
-	//		system("pause");
-	//	}
-	//}
-	//printf("\n");
-
+	// invoke Qhull for computing the conical hull
 	int n = ext_vec.size() + 1;
-
-
 	int curlong, totlong; /* used !qh_NOmem */
 	int exitcode;
 	boolT ismalloc = True;
@@ -560,6 +363,8 @@ void get_hyperplanes(vector<point_t*>& ext_vec, hyperplane_t*& hp, vector<point_
 		//		break;
 		//	}
 		//}
+
+		// the bounding hyperplaines of the conical hull
 		facetT *facet;
 		FORALLfacets{
 
@@ -588,6 +393,7 @@ void get_hyperplanes(vector<point_t*>& ext_vec, hyperplane_t*& hp, vector<point_
 
 }
 
+// hyperplane pruning
 int hyperplane_dom(point_t* p_i, point_t* p_j, vector<point_t*> ext_pts)
 {
 	int dim = p_i->dim;
@@ -596,6 +402,7 @@ int hyperplane_dom(point_t* p_i, point_t* p_j, vector<point_t*> ext_pts)
 	
 	int below_count = 0;
 
+	// to perform hyperplane pruning, check each extreme points of R
 	for(int i = 0; i < ext_pts.size(); i++)
 	{
 		point_t* ext_pt = ext_pts[i];
@@ -615,17 +422,16 @@ int hyperplane_dom(point_t* p_i, point_t* p_j, vector<point_t*> ext_pts)
 		return 0;
 }
 
+// conical hull pruning
 int conical_hull_dom(point_t* p_i, point_t* p_j, hyperplane_t* hp, vector<point_t*> hyperplanes, vector<point_t*> ext_vec)
 {
 	int dim = p_i->dim;
 	int dominate;
 
+	// check the necessary condition
 	point_t* minus = sub(p_j, p_i);
-
 	double len = compute_intersection_len(hp, minus);
-
 	if (len < 1 && len > 0 || isZero(len - 1) || isZero(len))
-	//if(1)
 	{
 		bool all_below = true;
 		for(int i = 0; i < hyperplanes.size(); i++)
@@ -639,40 +445,10 @@ int conical_hull_dom(point_t* p_i, point_t* p_j, hyperplane_t* hp, vector<point_
 				break;
 			}
 		}
+		// check if below all bounding hyperplanes of the conical hull
 		if (all_below)
 		{
 			dominate = 1;
-			if(len > 1 )
-			{
-				printf("bug\n");
-
-			//	printf("hyperplanes:\n");
-			//	for(int i = 0; i < hyperplanes.size(); i++)
-			//		print_point(hyperplanes[i]);
-
-			//	print_point(minus);
-			//	printf("below 1 - %lf\n", dot_prod(minus, hyperplanes[0]));
-			//	printf("below 2 - %lf\n", dot_prod(minus, hyperplanes[1]));
-			//	
-
-			//	print_point(hp->normal);
-			//	printf("offset: %lf\n", hp->offset);
-
-
-			//	if(insideCone(ext_vec, minus))
-			//		printf("in\n");
-			//	else
-			//		printf("out\n");
-
-			//	printf("len: %lf\n", len);
-
-			//	for(int i =0; i < ext_vec.size(); i++)
-			//	{
-			//		print_point(ext_vec[i]);
-			//		//printf("dot_prod: %lf, len: %lf\n", dot_prod(hp->normal, ext_vec[i]), compute_intersection_len(hp,  ext_vec[i]) );
-			//	}
-			//	system("pause");
-			}
 		}
 		else
 			dominate = 0;
@@ -680,7 +456,6 @@ int conical_hull_dom(point_t* p_i, point_t* p_j, hyperplane_t* hp, vector<point_
 	else
 	{
 		dominate = 0;
-		//printf("pruned!\n");
 	}
 
 	release_point(minus);
@@ -688,14 +463,16 @@ int conical_hull_dom(point_t* p_i, point_t* p_j, hyperplane_t* hp, vector<point_
 	return dominate;
 }
 
+// check whether p_i has a higher uitlity than p_j based on either Hyperplane Prunning or Conical Hull Pruninig (defined by dom_option)
 int dom(point_t* p_i, point_t* p_j, vector<point_t*> ext_pts, hyperplane_t* hp, vector<point_t*> hyperplanes, vector<point_t*> ext_vec, int dom_option)
 {
-	if(dom_option == HYPER_PLANE)
+	if(dom_option == HYPER_PLANE) // hyperplane pruning
 		return hyperplane_dom(p_i, p_j, ext_pts);
-	else
+	else // conical hull pruning
 		return conical_hull_dom(p_i, p_j, hp, hyperplanes, ext_vec);
 }
 
+// get an approximate upper bound bound in O(|ext_pts|) time based on the MBR of R
 double get_rrbound_approx(vector<point_t*> ext_pts)
 {
 	if(ext_pts.size() == 0)
@@ -703,9 +480,9 @@ double get_rrbound_approx(vector<point_t*> ext_pts)
 	
 	int dim = ext_pts[0]->dim;
 
+	// compute the Minimum Bounding Rectangle (MBR)
 	double* max = new double[dim];
 	double* min = new double[dim];
-
 	for(int i = 0; i < dim; i++)
 	{
 		max[i] = ext_pts[0]->coord[i];
@@ -738,6 +515,7 @@ double get_rrbound_approx(vector<point_t*> ext_pts)
 	return bound < 1? bound: 1;
 }
 
+// get an "exact" upper bound bound in O(|ext_pts|^2) time based on R
 double get_rrbound_exact(vector<point_t*> ext_pts)
 {
 	if(ext_pts.size() == 0)
@@ -745,6 +523,7 @@ double get_rrbound_exact(vector<point_t*> ext_pts)
 
 	double max = 0;
 
+	// find the maximum pairwise L1-distance between the extreme vertices of R
 	for(int i = 0; i < ext_pts.size(); i++)
 	{
 		for(int j = i+1; j < ext_pts.size(); j++)
@@ -760,6 +539,13 @@ double get_rrbound_exact(vector<point_t*> ext_pts)
 	return max < 1? max : 1;
 }
 
+// use the seqentail way for maintaining the candidate set
+// P: the input car set
+// C_idx: the indexes of the current candidate favorite car in P
+// ext_vec: the set of extreme vecotr
+// rr: the upper bound of the regret ratio
+// stop_option: the stopping condition, which can be NO_BOUND, EXACT_BOUND and APPROX_BOUND
+// dom_option: the skyline options, which can be SQL or RTREE
 void sql_pruning(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec, double& rr, int stop_option, int dom_option)
 {
 	int dim = P->points[0]->dim;
@@ -769,13 +555,16 @@ void sql_pruning(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec, 
 	hyperplane_t* hp = NULL;
 	
 	if(dom_option == HYPER_PLANE)
-		ext_pts = get_extreme_pts(ext_vec);
+		ext_pts = get_extreme_pts(ext_vec); // in Hyperplane Pruning, we need the set of extreme points of R
 	else
 	{
+		// in Conical Pruning, we need bounding hyperplanes for the conical hull
 		get_hyperplanes(ext_vec, hp, hyperplanes); 
-		if(stop_option != NO_BOUND)
+		if(stop_option != NO_BOUND) // if an upper bound on the regret ratio is needed, we need the set of extreme points of R
 			ext_pts = get_extreme_pts(ext_vec);
 	}
+
+	// get the upper bound of the regret ratio based on (the extreme ponits of) R
 	if(stop_option == EXACT_BOUND)
 		rr = get_rrbound_exact(ext_pts);
 	else if (stop_option == APPROX_BOUND)
@@ -793,6 +582,7 @@ void sql_pruning(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec, 
 	//print_point(hp->normal);
 
 
+	// run the adapted squential skyline algorihtm
 	int* sl = new int[C_idx.size()];
 	int index = 0;
 
@@ -847,6 +637,13 @@ void sql_pruning(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec, 
 	
 }
 
+// use the branch-and-bound skyline (BBS) algorithm for maintaining the candidate set
+// P: the input car set
+// C_idx: the indexes of the current candidate favorite car in P
+// ext_vec: the set of extreme vecotr
+// rr: the upper bound of the regret ratio
+// stop_option: the stopping condition, which can be NO_BOUND, EXACT_BOUND and APPROX_BOUND
+// dom_option: the skyline options, which can be SQL or RTREE
 void rtree_pruning(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec, double& rr,  int stop_option, int dom_option)
 {
 	vector<point_t*> ext_pts;
@@ -854,13 +651,16 @@ void rtree_pruning(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec
 	hyperplane_t* hp = NULL;
 	
 	if(dom_option == HYPER_PLANE)
-		ext_pts = get_extreme_pts(ext_vec);
+		ext_pts = get_extreme_pts(ext_vec); // in Hyperplane Pruning, we need the set of extreme points of R
 	else
 	{
+		// in Conical Pruning, we need bounding hyperplanes for the conical hull
 		get_hyperplanes(ext_vec, hp, hyperplanes); 
-		if(stop_option != NO_BOUND)
+		if(stop_option != NO_BOUND) // if a upper bound on the regret ratio is needed, we need the set of extreme points of R
 			ext_pts = get_extreme_pts(ext_vec);
 	}
+	
+	// get the upper bound of the regret ratio based on (the extreme ponits of) R
 	if(stop_option == EXACT_BOUND)
 		rr = get_rrbound_exact(ext_pts);
 	else if (stop_option == APPROX_BOUND)
@@ -868,16 +668,17 @@ void rtree_pruning(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec
 	else 
 		rr = 1;
 
+	// parameters for building the R-trees
 	rtree_info *aInfo;
 	aInfo = (rtree_info *)malloc(sizeof(rtree_info));
 	memset(aInfo, 0, sizeof(rtree_info));
-
 	aInfo->m = 18;
 	aInfo->M = 36;
 	aInfo->dim = P->points[0]->dim;
 	aInfo->reinsert_p = 27;
 	aInfo->no_histogram = C_idx.size();
 
+	// construct R-tree
 	node_type *root = contructRtree(P, C_idx, aInfo);
 
 	priority_queue<node_type*, vector<node_type*>, nodeCmp> heap;
@@ -888,12 +689,12 @@ void rtree_pruning(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec
 	int index = 0;
 	int dim = aInfo->dim;
 
+	// run the adapted BBS algorihtm
 	while (!heap.empty())
 	{
 		node_type* n = heap.top();
 		heap.pop();
 
-	    
 		if (n->attribute != LEAF)
 		{
 			
@@ -960,14 +761,12 @@ void rtree_pruning(point_set_t* P, vector<int>& C_idx, vector<point_t*>& ext_vec
 		}
 	}
 	
+	// clean up
 	C_idx.clear();
 	for(int i = 0; i < index; i++)
 		C_idx.push_back(sl[i]);
-
 	delete[] sl;
-
 	free(aInfo);
-
 	if(dom_option == HYPER_PLANE)
 	{
 		for(int i = 0; i < ext_pts.size(); i++)

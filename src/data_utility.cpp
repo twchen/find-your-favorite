@@ -23,6 +23,9 @@ point_t* alloc_point( int dim)
 	return point_v;
 }
 
+/*
+ *	Allocate memory for a point in dim-dimensional space with id
+ */
 point_t* alloc_point(int dim, int id)
 {
 	point_t* point_v = alloc_point(dim);
@@ -32,6 +35,9 @@ point_t* alloc_point(int dim, int id)
 	return point_v;
 }
 
+/*
+ *	Generate a random point in dim-dimensional space
+ */
 point_t* rand_point(int dim)
 {
 	point_t* point_v = alloc_point(dim);
@@ -62,6 +68,9 @@ void release_point( point_t* &point_v)
 	point_v = NULL;
 }
 
+/*
+ *	Allocate memory for a hyperplane in dim-dimensional space
+ */
 hyperplane_t* alloc_hyperplane(point_t* normal, double offset)
 {
 	hyperplane_t* hyperplane_v;
@@ -75,6 +84,9 @@ hyperplane_t* alloc_hyperplane(point_t* normal, double offset)
 	return hyperplane_v;
 }
 
+/*
+ *	Release memory for a point in dim-dimensional space
+ */
 void release_hyperplane(hyperplane_t* &hyperplane_v)
 {
 	if (hyperplane_v == NULL)
@@ -126,42 +138,6 @@ void release_point_set(point_set_t* &point_set_v, bool clear)
 	point_set_v = NULL;
 }
 
-hyperplane_set_t* alloc_hyperplane_set(int numberOfHyperplanes)
-{
-	hyperplane_set_t* hyperplane_set_v;
-
-	hyperplane_set_v = (hyperplane_set_t*)malloc(sizeof(hyperplane_set_t));
-	memset(hyperplane_set_v, 0, sizeof(hyperplane_set_t));
-
-	hyperplane_set_v->numberOfHyperplanes = numberOfHyperplanes;
-
-	hyperplane_set_v->hyperplanes = (hyperplane_t **)malloc(numberOfHyperplanes * sizeof(hyperplane_t*));
-	memset(hyperplane_set_v->hyperplanes, 0, numberOfHyperplanes * sizeof(hyperplane_t*));
-
-	return hyperplane_set_v;
-}
-
-void release_hyperplane_set(hyperplane_set_t* &hyperplane_set_v, bool clear)
-{
-	if (hyperplane_set_v == NULL)
-		return;
-
-	if (hyperplane_set_v->hyperplanes != NULL)
-	{
-		if (clear)
-		{
-			for (int i = 0; i < hyperplane_set_v->numberOfHyperplanes; i++)
-				release_hyperplane(hyperplane_set_v->hyperplanes[i]);
-		}
-
-		free(hyperplane_set_v->hyperplanes);
-		hyperplane_set_v->hyperplanes = NULL;
-	}
-
-	free(hyperplane_set_v);
-	hyperplane_set_v = NULL;
-}
-
 /*
 *	For degug purpose, print the coordinates for a given point
 */
@@ -173,7 +149,6 @@ void print_point(point_t* point_v)
 		printf("%f ", point_v->coord[i]);
 	printf("\n");
 }
-
 
 /*
  *	For debug purose, print the contents of a given point set

@@ -15,9 +15,6 @@
 #define PI					3.1415926
 #define INF					100000000
 #define	MAX_FILENAME_LENG	256
-#define	MAX_QUERIES			10
-#define CONFIG_FILE			"config.txt"
-#define MAX_ALG				8
 
 #define DEBUG 1
 
@@ -71,6 +68,7 @@ typedef struct point_set
 	point_t **points;
 }	point_set_t;
 
+// data structure for storing hyperplane.
 typedef struct hyperplane
 {
 	point_t*	normal;
@@ -78,6 +76,7 @@ typedef struct hyperplane
 
 }	hyperplane_t;
 
+// data structure for storing hyperplane set.
 typedef struct hyperplane_set
 {
 	int numberOfHyperplanes;
@@ -86,12 +85,14 @@ typedef struct hyperplane_set
 }	hyperplane_set_t;
 
 
+// R-tree related data structures
 typedef struct rtree_info_s
 {
 	int m, M, dim, reinsert_p, no_histogram;
 	int extra_level;
 } rtree_info;
 
+// R-tree related data structures
 typedef struct node {
 	R_TYPE *a;
 	R_TYPE *b;
@@ -104,7 +105,7 @@ typedef struct node {
 
 }   node_type;
 
-
+// R-tree related data structures
 struct nodeCmp
 {
 	bool operator()(const node_type* lhs, const node_type* rhs) const
@@ -120,6 +121,7 @@ struct nodeCmp
 	}
 };
 
+// R-tree related data structures
 typedef struct NN {
 	double dist;
 	int oid;
@@ -128,12 +130,13 @@ typedef struct NN {
 	struct NN *next;
 } NN_type;
 
+// R-tree related data structures
 typedef struct BranchArray {
 	double min;
 	node_type *node;
 } ABL;
 
-
+// R-tree related data structures
 typedef struct config_rt {
 	int dim;
 	int m;
@@ -147,6 +150,7 @@ typedef struct config_rt {
 	char save_tree_file[FILENAME_MAX];
 }   config_type;
 
+// R-tree related data structures
 struct setNode_s
 {
 	int noOfNode;

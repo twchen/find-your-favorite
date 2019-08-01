@@ -28,6 +28,8 @@
        -infty < r2 <= -1
 */
 
+
+// Use LP to check whehter a point pt is a conical combination of the vectors in ExRays
 bool insideCone(std::vector<point_t*> ExRays, point_t* pt)
 {
 	int M = ExRays.size();
@@ -113,7 +115,7 @@ bool insideCone(std::vector<point_t*> ExRays, point_t* pt)
 }
 
 
-
+// Use LP to find a feasible point of the half sapce intersection (used later in Qhull for half space intersection)
 point_t* find_feasible(std::vector<hyperplane_t*> hyperplane)
 {
 	int M = hyperplane.size();
@@ -237,7 +239,7 @@ point_t* find_feasible(std::vector<hyperplane_t*> hyperplane)
 	return feasible_pt;
 }
 
-
+// solve the LP in frame computation
 void solveLP(std::vector<point_t*> B, point_t* b, double& theta, point_t* & pi)
 {
 	int M = B.size()+1;

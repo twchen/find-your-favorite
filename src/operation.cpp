@@ -2,49 +2,13 @@
 
 #include "operation.h"
 
+// is x equal to 0 ?
 int isZero(double x)
 {
 	return x > -EQN_EPS && x < EQN_EPS;
 }
 
-/*
- *	Generate a random float value in [min_v, max_v].
- */
-float rand_f( float min_v, float max_v)
-{
-	float rand_v;
-
-	if( min_v > max_v)
-		return 0;
-
-	//srand( time(NULL));
-
-	rand_v = float( rand( )) / RAND_MAX; //rand_v falls in [0,1] randomly.
-
-	return ( max_v - min_v) * rand_v + min_v;
-}
-
-/*
- *	Calculate the Euclidean distance between two points
- */
-DIST_TYPE calc_dist( point_t* point_v1, point_t* point_v2)
-{
-	int i, dim;
-	DIST_TYPE diff;
-
-	diff = 0;
-	
-	dim = point_v1->dim;
-	for( i=0; i<dim; i++)
-	{
-		double t = point_v1->coord[ i];
-		double t2 = point_v2->coord[ i];
-		diff += ( DIST_TYPE)pow( point_v1->coord[ i] - point_v2->coord[ i], 2);
-	}
-
-	return ( DIST_TYPE)sqrt( diff);
-}
-
+// compute L1 distance
 DIST_TYPE calc_l1_dist( point_t* point_v1, point_t* point_v2)
 {
 	int i, dim;
@@ -131,6 +95,9 @@ double dot_prod(point_t* point_v1, double* v)
 	return result;
 }
 
+/*
+ *	Calculate the dot product between two points
+ */
 double dot_prod(double* v1, double* v2, int dim)
 {
 	double result = 0;
@@ -191,6 +158,7 @@ point_t* scale(double c, point_t* point_v)
 	return result;
 }
 
+// compute the rank of the guass matrix (used for computing frames)
 int guassRank(vector< point_t* > P)
 {
 	int dim = P[0]->dim;
@@ -278,6 +246,7 @@ int guassRank(vector< point_t* > P)
 	return count;
 }
 
+// check if two vectors are linearly independent (used for computing frames)
 bool linearInd(point_t* p, point_t* q)
 {
 	int dim = p->dim;
@@ -307,7 +276,7 @@ bool linearInd(point_t* p, point_t* q)
 	return false;
 }
 
-
+// compute the intersection betwee a hyperplane and a ray shooting in s
 double compute_intersection_len(hyperplane_t *hp, point_t* s)
 {
 	return calc_len(s) * (hp->offset / (dot_prod(hp->normal, s)));

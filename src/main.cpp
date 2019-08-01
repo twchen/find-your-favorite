@@ -2,7 +2,8 @@
 
 int main(int argc, char *argv[])
 { 
-	userStudy();
+	// the main method for the demo system
+	demo();
 
 	return 0;
 }

@@ -150,6 +150,7 @@ void initial(vector<point_t*> P, vector<int>& active, int& rank, vector<int>& B,
 	release_point(pi2);
 }
 
+// frame compuatation (all at once)
 void frameConeFastLP(vector<point_t*> rays, vector<int>& B)
 {
 	int dim = rays[0]->dim;
@@ -209,6 +210,7 @@ void frameConeFastLP(vector<point_t*> rays, vector<int>& B)
 	release_point(pi);
 }
 
+// parital frame compuatation (only s)
 void partialConeFastLP(vector<point_t*> rays, vector<int>& B, int s)
 {
 	int dim = rays[0]->dim;
@@ -269,6 +271,7 @@ void partialConeFastLP(vector<point_t*> rays, vector<int>& B, int s)
 	release_point(sigma);
 }
 
+// frame compuatation (all at once) - naive implementation
 void frameConeLP(std::vector<point_t*> rays, std::vector<int>& idxs)
 {
 	int dim = rays[0]->dim;

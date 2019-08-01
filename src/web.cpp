@@ -186,7 +186,7 @@ EMSCRIPTEN_BINDINGS(my_module) {
 #else
 
 int main() {
-    userStudy();
+    demo();
     return 0;
 }
 

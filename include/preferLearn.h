@@ -6,13 +6,13 @@
 #include "operation.h"
 #include "read_write.h"
 #include "pruning.h"
-//#include "maxUtility.h"
+#include <algorithm>
 
+// differnt tuple selection mode
 #define RANDOM 1
 #define SIMPLEX 2
 
-//for user study
-
-void userStudy();
+// the main method for the demo system
+void demo();
 
 #endif
