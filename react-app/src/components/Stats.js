@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import classNames from "classnames";
 
+// statistics including the number of cars pruned/left.
 class Stats extends React.Component {
   constructor(props) {
     super(props);

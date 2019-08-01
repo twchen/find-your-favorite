@@ -33,6 +33,7 @@ function SlideItem({ text }) {
   );
 }
 
+// show/change the selected attributes for displaying the convex hull
 class Legend extends React.Component {
   render() {
     const settings = {

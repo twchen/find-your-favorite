@@ -4,6 +4,7 @@ import THREE from "./three";
 const SCALE = 100;
 const FACTOR = 10; // font size = SCALE / FACTOR
 
+// the convex hull of the preference space
 class ConvexHull extends React.Component {
   componentDidMount() {
     const width = this.mount.clientWidth;

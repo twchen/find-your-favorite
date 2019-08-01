@@ -16,7 +16,8 @@ import {
 const SIMPLEX = 2;
 const RANDOM = 1;
 
-class Interaction extends React.Component {
+// iteratively ask the user to choose the preferred car from a pair of cars.
+class Question extends React.Component {
   constructor(props) {
     super(props);
     const smallerBetter = new window.Module.VectorInt();
@@ -174,4 +175,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Interaction);
+)(Question);

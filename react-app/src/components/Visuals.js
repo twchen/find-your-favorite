@@ -1,6 +1,6 @@
 import React from "react";
 import Histogram from "./Histogram";
-import PreferencePlane from "./PreferencePlane";
+import PreferenceSpace from "./PreferenceSpace";
 
 function Visuals() {
   return (
@@ -11,7 +11,7 @@ function Visuals() {
           <Histogram />
         </div>
         <div className="col-6" style={{ minWidth: "500px" }}>
-          <PreferencePlane />
+          <PreferenceSpace />
         </div>
       </div>
     </div>

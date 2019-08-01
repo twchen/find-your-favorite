@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { setActiveComponent, restart } from "../actions";
 import Histogram from "./Histogram";
 
+// show the number of questions asked and the favourite car/remaining cars.
 function Result({
   labels,
   candidates,

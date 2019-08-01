@@ -1,3 +1,4 @@
+// read points from a text file
 function parsePoints(text) {
   const points = text
     .trim()
@@ -12,15 +13,18 @@ function parsePoints(text) {
   return points;
 }
 
+// read labels from a text file
 function parseLabels(text) {
   const labels = text.trim().split("\n");
   return labels;
 }
 
+// check if val is in the range [low, high].
 function isInRange(val, low, high) {
   return low <= val && val <= high;
 }
 
+// get the range of each attribute in a set of points.
 export const getRanges = points => {
   const ranges = points[0].map(x => ({ low: x, high: x }));
   points.slice(1).forEach(point => {
@@ -32,6 +36,7 @@ export const getRanges = points => {
   return ranges;
 };
 
+// load a dataset by reading its points and labels.
 export const loadDataset = async (pointsURL, labelsURL) => {
   let response = await fetch(pointsURL);
   const points = parsePoints(await response.text());
@@ -43,6 +48,7 @@ export const loadDataset = async (pointsURL, labelsURL) => {
   return [points, labels];
 };
 
+// get points that are in the specified ranges.
 export const selectCandidates = (points, ranges, mask, maxPoints) => {
   const candidates = [];
   for (let i = 0; i < points.length; ++i) {
@@ -60,6 +66,7 @@ export const selectCandidates = (points, ranges, mask, maxPoints) => {
   return candidates;
 };
 
+// convert a JS array to a C++ 2D vector
 export const array2Vector2D = array => {
   const vector = new window.Module.VecVecDouble();
   array.forEach(arr => {
@@ -71,6 +78,7 @@ export const array2Vector2D = array => {
   return vector;
 };
 
+// convert a C++ 2D vector to a JS array
 export const vector2Array2D = vector => {
   const array = [];
   for (let i = 0; i < vector.size(); ++i) {
@@ -82,6 +90,7 @@ export const vector2Array2D = vector => {
   return array;
 };
 
+// convert a C++ vector to a JS array
 export const vector2Array = vector => {
   const array = [];
   for (let i = 0; i < vector.size(); ++i) {
@@ -90,6 +99,8 @@ export const vector2Array = vector => {
   return array;
 };
 
+// get the indices of points pruned.
+// both prevIndices and currIndices need to be sorted.
 export const getPrunedIndices = (prevIndices, currIndices) => {
   let prunedIndices = [];
   for (let i = 0, j = 0; i < prevIndices.size() || j < currIndices.size(); ) {

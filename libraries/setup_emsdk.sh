@@ -3,7 +3,4 @@ if [ ! -d emsdk ]; then
     cd emsdk
     ./emsdk install latest
     ./emsdk activate latest
-else
-    cd emsdk
 fi
-source ./emsdk_env.sh

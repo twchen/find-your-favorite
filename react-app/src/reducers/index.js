@@ -20,6 +20,7 @@ const activeComponent = (state = "Welcome", action) => {
   }
 };
 
+// all points in the dataset
 const points = (state = null, action) => {
   switch (action.type) {
     case SET_DATASET:
@@ -29,6 +30,7 @@ const points = (state = null, action) => {
   }
 };
 
+// the labels of points
 const labels = (state = null, action) => {
   switch (action.type) {
     case SET_DATASET:
@@ -38,6 +40,7 @@ const labels = (state = null, action) => {
   }
 };
 
+// the attribute names
 const attributes = (state = null, action) => {
   switch (action.type) {
     case SET_DATASET:
@@ -47,6 +50,7 @@ const attributes = (state = null, action) => {
   }
 };
 
+// the set of points in the specified ranges.
 const candidates = (state = null, action) => {
   switch (action.type) {
     case SET_CANDIDATES:
@@ -56,6 +60,7 @@ const candidates = (state = null, action) => {
   }
 };
 
+// show/hide attributes (this feature is not exposed in the UI)
 const mask = (state = null, action) => {
   switch (action.type) {
     case SET_DATASET:
@@ -71,7 +76,8 @@ const mask = (state = null, action) => {
   }
 };
 
-// array of [idx, step no.]
+// the set of points pruned.
+// it is an array of [idx, step no.]
 const prunedPoints = (state = [], action) => {
   switch (action.type) {
     case RESTART:
@@ -84,7 +90,8 @@ const prunedPoints = (state = [], action) => {
   }
 };
 
-// array of indices
+// the set of candidate points
+// it is an array of indices
 const leftPoints = (state = [], action) => {
   switch (action.type) {
     case RESTART:
@@ -111,6 +118,7 @@ const numLeftPoints = (state = [], action) => {
   }
 };
 
+// the algorithm to select a pair of points.
 const mode = (state = "simplex", action) => {
   switch (action.type) {
     case SET_MODE:
@@ -120,6 +128,7 @@ const mode = (state = "simplex", action) => {
   }
 };
 
+// vertices of the convex hull of the preference space.
 const vertices = (state = [], action) => {
   switch (action.type) {
     case UPDATE_CONVEX_HULL:

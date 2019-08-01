@@ -8,6 +8,7 @@ import {
 import { connect } from "react-redux";
 import { selectCandidates } from "../utils";
 
+// the welcome scene containing a brief introduction and a table to obtain the user's input
 class Welcome extends React.Component {
   constructor(props) {
     super(props);

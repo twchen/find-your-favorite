@@ -9,6 +9,7 @@ import {
   ChartLabel
 } from "react-vis";
 
+// a histogram to show the number of cars left vs the number of questions asked.
 class Histogram extends React.Component {
   constructor(props) {
     super(props);
